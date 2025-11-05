@@ -15,17 +15,39 @@ class Claim {
   - client: User
   - claimResolver: User
   - cancellation: ClaimCancellation
+  - project: Project
   - area: Area
+  - subArea: SubArea
+  - criticality: ClaimCriticality
+  - comments: ClaimComment[]
   - addHistoryEntry(entry: ClaimHistory) void
+  - assignResolver(resolver: User) void
   + changeIssue(issue: string) void
   + changeDescription(description: string) void
   + changeCategory(category: ClaimCategory) void
   + changeDate(date: Date) void
   + start() void
-  + resolve() void
+  + resolve(resolver: User) void
   + cancel() void
   + changePriority(priority: Priority) void
   + changeArea(area: Area) void
+  + changeCriticality(criticality: ClaimCriticality) void
+  + addComment(comment: ClaimComment) void
+  + removeComment(comment: ClaimComment) void
+}
+
+class ClaimCriticality {
+  - level: string
+  - description: string
+  + changeLevel(level: string) void
+  + changeDescription(description: string) void
+}
+
+class ClaimComment {
+  - content: string
+  - author: User
+  - date: Date
+  + changeContent(content: string) void
 }
 
 class ClaimCancellation {
@@ -40,6 +62,16 @@ class Priority {
   - description: string
   + changeNumber(number: number) void
   + changeDescription(description: string) void
+}
+
+class Project {
+  - name: string
+  - description: string
+  - areas: Area[]
+  + changeName(name: string) void
+  + changeDescription(description: string) void
+  + addArea(area: Area) void
+  + removeArea(area: Area) void
 }
 
 class Area {
@@ -78,13 +110,16 @@ class ClaimHistory {
   - date: Date
   - description: string
   - state: ClaimState
+  - isClasified: bool
 }
 
 class Role {
   - name: string
   + changeName(name: string) void
-  + isClient() bool
   + isAdmin() bool
+  + isAreaManager() bool
+  + isResolver() bool
+  + isClient() bool
 }
 
 class User {
@@ -108,7 +143,15 @@ ClaimHistory --> "1" ClaimState
 Claim --> "1" Priority
 Claim --> "0..1" ClaimCancellation
 Claim --> "1" ClaimCategory
-Claim --> "0..1" Area
+Claim --> "1" Project
+Claim --> "1" Area
+Claim --> "0..1" SubArea
+Claim --> "1" ClaimCriticality
+Claim --> "0..*" ClaimComment
+
+Area --> "0..*" SubArea
+Project --> "1..*" Area
+
 
 note for ClaimHistory "Registra los cambios de estado de una reclamación"
 ```
