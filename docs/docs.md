@@ -20,6 +20,9 @@ class Claim {
   - subArea: SubArea
   - criticality: ClaimCriticality
   - comments: ClaimComment[]
+  - rating: ClaimRating
+  - resolvedDate: Date
+  - resolvedComment: string
   - addHistoryEntry(entry: ClaimHistory) void
   - assignResolver(resolver: User) void
   + changeIssue(issue: string) void
@@ -50,6 +53,22 @@ class ClaimComment {
   + changeContent(content: string) void
 }
 
+class ClaimRating {
+  - score: number
+  - date: Date
+  - category: RatingCategory
+  - feedback: string
+  + changeScore(score: number) void
+  + changeFeedback(feedback: string) void
+}
+
+class RatingCategory {
+  - name: string
+  - description: string
+  + changeName(name: string) void
+  + changeDescription(description: string) void
+}
+
 class ClaimCancellation {
   - name: string
   - description: string
@@ -72,6 +91,11 @@ class Project {
   + changeDescription(description: string) void
   + addArea(area: Area) void
   + removeArea(area: Area) void
+}
+
+class UserProject {
+  - user: User
+  - project: Project
 }
 
 class Area {
@@ -110,7 +134,8 @@ class ClaimHistory {
   - date: Date
   - description: string
   - state: ClaimState
-  - isClasified: bool
+  - changedBy: string
+  - isClasified: boolean
 }
 
 class Role {

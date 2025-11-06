@@ -27,4 +27,12 @@ export class CreateClaimDto {
 
   @IsUUID()
   areaId: string;
+
+  @IsOptional()
+  @IsUUID()
+  projectId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  criticalityId?: string;
 }

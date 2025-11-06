@@ -9,7 +9,9 @@ import {
   Area,
   Claim,
   ClaimCategory,
+  ClaimCriticality,
   Priority,
+  Project,
   UserRole,
 } from '../../../src/module/tickets/domain/models';
 import {
@@ -18,7 +20,9 @@ import {
   PriorityService,
   UserRoleService,
 } from '../../../src/module/tickets/infrastructure/services';
+import { ClaimCriticalityService } from '../../../src/module/tickets/infrastructure/services/claim-criticality.service';
 import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
+import { ProjectService } from '../../../src/module/tickets/infrastructure/services/project.service';
 import { fakeApplicationUser } from '../../shared/fakes/user.fake';
 import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
@@ -37,6 +41,8 @@ describe('ClaimController', () => {
         PriorityService,
         ClaimCategoryService,
         AreaService,
+        ProjectService,
+        ClaimCriticalityService,
         CreateClaim,
         UpdateClaim,
         {
@@ -57,6 +63,14 @@ describe('ClaimController', () => {
         },
         {
           provide: getRepositoryToken(Area),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(Project),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(ClaimCriticality),
           useClass: Repository,
         },
         SupabaseTestProvider,

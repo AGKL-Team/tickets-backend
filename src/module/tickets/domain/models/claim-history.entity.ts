@@ -27,6 +27,9 @@ export class ClaimHistory {
   @JoinColumn()
   claim!: Claim;
 
+  @Column({ nullable: true })
+  operatorId?: string;
+
   @Column('bit', { default: false })
   isClasified!: boolean;
 
@@ -35,6 +38,7 @@ export class ClaimHistory {
     state: ClaimState,
     claim: Claim,
     isClasified: boolean = false,
+    operatorId?: string,
   ): ClaimHistory {
     const history = new ClaimHistory();
     history.date = new Date();
@@ -42,6 +46,7 @@ export class ClaimHistory {
     history.state = state;
     history.claim = claim;
     history.isClasified = isClasified;
+    history.operatorId = operatorId;
 
     return history;
   }

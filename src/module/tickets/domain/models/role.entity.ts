@@ -30,6 +30,22 @@ export class Role {
     );
   }
 
+  isAreaManager(): boolean {
+    return (
+      this.name?.toLowerCase() === 'area_manager' ||
+      this.name?.toLowerCase() === 'area-manager' ||
+      this.name?.toLowerCase() === 'area manager'
+    );
+  }
+
+  isResolver(): boolean {
+    return (
+      this.name?.toLowerCase() === 'resolver' ||
+      this.name?.toLowerCase() === 'agent' ||
+      this.name?.toLowerCase() === 'resolutor'
+    );
+  }
+
   static create(name: 'admin' | 'client'): Role {
     const role = new Role();
     role.name = name;

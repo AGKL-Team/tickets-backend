@@ -2,8 +2,10 @@ import { Test } from '@nestjs/testing';
 import { CreateClaim } from '../../../src/module/tickets/application/useCases/create-claim.use-case';
 import { AreaService } from '../../../src/module/tickets/infrastructure/services';
 import { ClaimCategoryService } from '../../../src/module/tickets/infrastructure/services/claim-category.service';
+import { ClaimCriticalityService } from '../../../src/module/tickets/infrastructure/services/claim-criticality.service';
 import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
 import { PriorityService } from '../../../src/module/tickets/infrastructure/services/priority.service';
+import { ProjectService } from '../../../src/module/tickets/infrastructure/services/project.service';
 
 describe('CreateClaim UseCase', () => {
   let useCase: CreateClaim;
@@ -11,12 +13,16 @@ describe('CreateClaim UseCase', () => {
   let priorityService: Partial<PriorityService>;
   let categoryService: Partial<ClaimCategoryService>;
   let areaService: Partial<AreaService>;
+  let projectService: Partial<any>;
+  let criticalityService: Partial<any>;
 
   beforeEach(async () => {
     claimService = { save: jest.fn() } as any;
     priorityService = { findById: jest.fn() } as any;
     categoryService = { findById: jest.fn() } as any;
     areaService = { findById: jest.fn() } as any;
+    projectService = { findById: jest.fn() } as any;
+    criticalityService = { findById: jest.fn() } as any;
 
     const module = await Test.createTestingModule({
       providers: [
@@ -25,6 +31,8 @@ describe('CreateClaim UseCase', () => {
         { provide: PriorityService, useValue: priorityService },
         { provide: ClaimCategoryService, useValue: categoryService },
         { provide: AreaService, useValue: areaService },
+        { provide: ProjectService, useValue: projectService },
+        { provide: ClaimCriticalityService, useValue: criticalityService },
       ],
     }).compile();
 

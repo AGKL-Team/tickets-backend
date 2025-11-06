@@ -24,4 +24,8 @@ export class UpdateClaimDto {
   @IsOptional()
   @IsUUID()
   areaId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  projectId?: string;
 }

@@ -3,8 +3,10 @@ import { Claim } from '../../domain/models';
 import {
   AreaService,
   ClaimCategoryService,
+  ClaimCriticalityService,
   ClaimService,
   PriorityService,
+  ProjectService,
 } from '../../infrastructure/services';
 import { CreateClaimDto } from '../dto/create-claim.dto';
 
@@ -15,6 +17,8 @@ export class CreateClaim {
     private readonly priorityService: PriorityService,
     private readonly categoryService: ClaimCategoryService,
     private readonly areaService: AreaService,
+    private readonly projectService: ProjectService,
+    private readonly criticalityService: ClaimCriticalityService,
   ) {}
 
   /**
@@ -36,6 +40,19 @@ export class CreateClaim {
     const category = await this.categoryService.findById(categoryId);
     const area = await this.areaService.findById(areaId);
 
+    // optional project and criticality
+    let project: any = undefined;
+    if (request.projectId) {
+      project = await this.projectService.findById(request.projectId);
+    }
+
+    let criticality: any = undefined;
+    if (request.criticalityId) {
+      criticality = await this.criticalityService.findById(
+        request.criticalityId,
+      );
+    }
+
     const claim = Claim.create(
       issue,
       date ? new Date(date) : new Date(),
@@ -45,6 +62,8 @@ export class CreateClaim {
       clientId,
       description,
       area,
+      project,
+      criticality,
     );
 
     // Save the claim into database

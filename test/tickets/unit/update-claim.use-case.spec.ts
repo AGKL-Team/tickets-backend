@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { UpdateClaim } from '../../../src/module/tickets/application/useCases/update-claim.use-case';
 import { AreaService } from '../../../src/module/tickets/infrastructure/services';
@@ -124,5 +124,31 @@ describe('UpdateClaim UseCase', () => {
       ConflictException,
     );
     expect(claimService.update).not.toHaveBeenCalled();
+  });
+
+  it('throws BadRequestException when trying to update projectId', async () => {
+    const id = 'claim-3';
+    const userId = 'user-3';
+
+    const existing: any = {
+      id,
+      clientId: userId,
+      isPending: () => true,
+      isInProgress: () => true,
+      changeIssue: jest.fn(),
+      changeDescription: jest.fn(),
+      changeDate: jest.fn(),
+      changePriority: jest.fn(),
+      changeCategory: jest.fn(),
+      changeArea: jest.fn(),
+    };
+
+    (claimService.findById as jest.Mock).mockResolvedValue(existing);
+
+    const request: any = { projectId: 'proj-1' };
+
+    await expect(useCase.execute(id, request, userId)).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
   });
 });
