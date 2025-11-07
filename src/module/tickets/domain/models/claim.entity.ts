@@ -71,7 +71,7 @@ export class Claim {
   @OneToMany(() => ClaimHistory, (h) => h.claim, {
     cascade: true,
   })
-  history?: ClaimHistory[];
+  history!: ClaimHistory[];
 
   @OneToMany(() => ClaimComment, (c) => c.claim, { cascade: true })
   comments?: ClaimComment[];
@@ -84,13 +84,13 @@ export class Claim {
   rating?: ClaimRating | null;
 
   @Column('varchar')
-  number: string;
+  number!: string;
 
   @Column('uuid')
   clientId!: string;
 
   @Column({ type: 'uuid', nullable: true })
-  claimResolverId: string | null;
+  claimResolverId!: string | null;
 
   @OneToOne(() => ClaimCancellation, (c) => c.claim, {
     cascade: true,

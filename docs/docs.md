@@ -161,9 +161,13 @@ class User {
 Claim --> "1..*" ClaimHistory
 Claim --> "1" ClaimState
 
+ClaimComment --> User
 User --> "1..*" Role
 User --> "1..*" Claim
+User --> "0..*" UserProject
 
+Claim --> "0..1" ClaimRating
+ClaimRating --> "1" RatingCategory
 ClaimHistory --> "1" ClaimState
 Claim --> "1" Priority
 Claim --> "0..1" ClaimCancellation

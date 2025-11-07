@@ -21,5 +21,5 @@ export interface PriorityRepository {
    * Find a priority using the number
    * @param number New priority's number
    */
-  findByNumber(number: number);
+  findByNumber(number: number): Promise<Priority | null>;
 }

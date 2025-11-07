@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
 import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
 import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
+import { fakeAdminUserRole } from '../../shared/fakes/role.admin.fake';
+import { fakeClientUserRole } from '../../shared/fakes/role.client.fake';
 import { fakeAdminUser } from '../../shared/fakes/user.admin.fake';
 import { fakeClientUser } from '../../shared/fakes/user.client.fake';
 import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
@@ -45,7 +47,7 @@ describe('ClaimService', () => {
     it('returns all claims for admin', async () => {
       const expected = [new Claim(), new Claim()];
       (userRoleServiceMock.findByUserId as jest.Mock).mockResolvedValueOnce([
-        { role: { isAdmin: () => true } },
+        fakeAdminUserRole(fakeAdminUser.id),
       ]);
 
       jest
@@ -61,7 +63,7 @@ describe('ClaimService', () => {
     it('returns only client claims for non-admin', async () => {
       const expected = [new Claim()];
       (userRoleServiceMock.findByUserId as jest.Mock).mockResolvedValueOnce([
-        { role: { isAdmin: () => false } },
+        fakeClientUserRole(fakeClientUser.id),
       ]);
 
       const findSpy = jest
@@ -84,7 +86,7 @@ describe('ClaimService', () => {
       claim.clientId = fakeClientUser.id;
 
       (userRoleServiceMock.findByUserId as jest.Mock).mockResolvedValueOnce([
-        { role: { isAdmin: () => false } },
+        fakeClientUserRole(fakeClientUser.id),
       ]);
 
       const findOneSpy = jest
@@ -106,7 +108,7 @@ describe('ClaimService', () => {
       claim.clientId = 'other-client';
 
       (userRoleServiceMock.findByUserId as jest.Mock).mockResolvedValueOnce([
-        { role: { isAdmin: () => true } },
+        fakeAdminUserRole(fakeAdminUser.id),
       ]);
 
       jest
@@ -123,7 +125,7 @@ describe('ClaimService', () => {
       claim.clientId = 'owner-x';
 
       (userRoleServiceMock.findByUserId as jest.Mock).mockResolvedValueOnce([
-        { role: { isAdmin: () => false } },
+        fakeClientUserRole(fakeClientUser.id),
       ]);
 
       jest

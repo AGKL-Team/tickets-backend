@@ -6,6 +6,7 @@ import { ClaimCategoryService } from '../../../src/module/tickets/infrastructure
 import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
 import { PriorityService } from '../../../src/module/tickets/infrastructure/services/priority.service';
 import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
+import { fakeAdminUserRole } from '../../shared/fakes/role.admin.fake';
 
 describe('UpdateClaim UseCase', () => {
   let useCase: UpdateClaim;
@@ -30,7 +31,11 @@ describe('UpdateClaim UseCase', () => {
 
     areaService = { findById: jest.fn() };
     const userRoleService: Partial<UserRoleService> = {
-      findByUserId: jest.fn().mockResolvedValue([{ isAdmin: () => true }]),
+      findByUserId: jest
+        .fn()
+        .mockImplementation((uid: string) =>
+          Promise.resolve([fakeAdminUserRole(uid)]),
+        ),
     };
 
     const module = await Test.createTestingModule({

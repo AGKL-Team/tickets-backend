@@ -11,7 +11,7 @@ export class SignUpRequest {
   @IsEmail()
   @IsNotEmpty()
   @MaxLength(255)
-  email: string;
+  email!: string;
 
   /** The user's password. */
   @IsNotEmpty()
@@ -22,13 +22,13 @@ export class SignUpRequest {
     minNumbers: 1,
   })
   @MaxLength(16)
-  password: string;
+  password!: string;
 
   /** The user's password confirmation. Must match the password field. */
   @IsNotEmpty()
   @MinLength(8)
   @MaxLength(16)
-  confirmPassword: string;
+  confirmPassword!: string;
 
   /** Additional options for the sign-up process. */
   options?: {

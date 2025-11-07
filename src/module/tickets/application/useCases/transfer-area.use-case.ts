@@ -1,7 +1,9 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { UserArea } from '../../domain/models';
 import {
   AreaService,
   ClaimService,
+  UserAreaService,
   UserRoleService,
 } from '../../infrastructure/services';
 
@@ -11,6 +13,7 @@ export class TransferArea {
     private readonly claimService: ClaimService,
     private readonly areaService: AreaService,
     private readonly userRoleService: UserRoleService,
+    private readonly userAreaService: UserAreaService,
   ) {}
 
   /**
@@ -18,14 +21,8 @@ export class TransferArea {
    */
   async execute(claimId: string, areaId: string, operatorId: string) {
     const operatorRoles = await this.userRoleService.findByUserId(operatorId);
-    const isAdmin = operatorRoles.some((r: any) =>
-      typeof r.isAdmin === 'function'
-        ? r.isAdmin()
-        : r.role?.isAdmin && r.role.isAdmin(),
-    );
-    const isAreaManager = operatorRoles.some(
-      (r: any) => r.role?.isAreaManager && r.role.isAreaManager(),
-    );
+    const isAdmin = operatorRoles.some((r) => r.isAdmin());
+    const isAreaManager = operatorRoles.some((r) => r.isAreaManager());
 
     if (!isAdmin && !isAreaManager)
       throw new ForbiddenException(
@@ -34,6 +31,22 @@ export class TransferArea {
 
     const area = await this.areaService.findById(areaId);
     const claim = await this.claimService.findById(claimId, operatorId);
+
+    // If operator is areaManager (not admin) ensure they are assigned to both source and destination areas
+    if (!isAdmin && isAreaManager) {
+      const operatorAreas = await this.userAreaService.findByUserId(operatorId);
+      const assignedToSource = operatorAreas.some(
+        (ua: UserArea) => ua.area?.id === claim.area?.id,
+      );
+      const assignedToDest = operatorAreas.some(
+        (ua: UserArea) => ua.area?.id === area.id,
+      );
+      if (!assignedToSource || !assignedToDest)
+        throw new ForbiddenException(
+          'No tiene permisos sobre el área origen o destino para transferir este reclamo',
+        );
+    }
+
     claim.changeArea(area, operatorId);
     return this.claimService.update(claim);
   }

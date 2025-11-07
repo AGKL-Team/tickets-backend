@@ -23,12 +23,20 @@ export class UserRole {
   @CreateDateColumn()
   createdAt!: Date;
 
-  isAdmin(): unknown {
+  isAdmin(): boolean {
     return this.role.isAdmin();
   }
 
-  isClient() {
+  isClient(): boolean {
     return this.role.isClient();
+  }
+
+  isAreaManager(): boolean {
+    return this.role.isAreaManager();
+  }
+
+  isResolver(): boolean {
+    return this.role.isResolver();
   }
 
   static create(userId: string, role: Role): UserRole {

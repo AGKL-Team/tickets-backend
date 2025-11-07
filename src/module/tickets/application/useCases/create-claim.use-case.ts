@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Claim } from '../../domain/models';
+import { Claim, ClaimCriticality, Project } from '../../domain/models';
 import {
   AreaService,
   ClaimCategoryService,
@@ -41,12 +41,12 @@ export class CreateClaim {
     const area = await this.areaService.findById(areaId);
 
     // optional project and criticality
-    let project: any = undefined;
+    let project: Project | undefined = undefined;
     if (request.projectId) {
       project = await this.projectService.findById(request.projectId);
     }
 
-    let criticality: any = undefined;
+    let criticality: ClaimCriticality | undefined = undefined;
     if (request.criticalityId) {
       criticality = await this.criticalityService.findById(
         request.criticalityId,

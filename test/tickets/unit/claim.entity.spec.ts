@@ -44,8 +44,11 @@ describe('Claim entity (history)', () => {
 
     claim.changeIssue('Nuevo asunto');
     expect(claim.history).toBeDefined();
-    expect(claim.history!.length).toBe(1);
-    const h1 = claim.history![0];
+    const history = claim.history;
+    expect(history.length).toBe(1);
+    expect(history[0]).toBeDefined();
+    const h1 = history[0];
+    if (!h1) throw new Error('Missing history entry h1');
     expect(h1).toBeInstanceOf(ClaimHistory);
     expect(h1.description).toContain('Cambio de asunto');
     // now change* methods include the state in the description
@@ -53,8 +56,10 @@ describe('Claim entity (history)', () => {
     expect(h1.state).toBe(pending);
 
     claim.changeDescription('Nueva descripción');
-    expect(claim.history!.length).toBe(2);
-    const h2 = claim.history![1];
+    expect(history.length).toBe(2);
+    expect(history[1]).toBeDefined();
+    const h2 = history[1];
+    if (!h2) throw new Error('Missing history entry h2');
     expect(h2.description).toContain('Cambio de descripción');
     expect(h2.description).toContain('Estado:');
     expect(h2.state).toBe(pending);
@@ -62,8 +67,10 @@ describe('Claim entity (history)', () => {
     // changeCategory should add an entry and not change the claim state
     const newCat = ClaimCategory.create('urgente', 'categoría urgente');
     claim.changeCategory(newCat);
-    expect(claim.history!.length).toBe(3);
-    const h3 = claim.history![2];
+    expect(history.length).toBe(3);
+    expect(history[2]).toBeDefined();
+    const h3 = history[2];
+    if (!h3) throw new Error('Missing history entry h3');
     expect(h3.description).toContain('Cambio de categoría');
     expect(h3.description).toContain('Estado:');
     expect(h3.state).toBe(pending);
@@ -71,8 +78,10 @@ describe('Claim entity (history)', () => {
     // changeDate should add an entry with ISO strings and keep state
     const newDate = new Date('2025-01-01T00:00:00.000Z');
     claim.changeDate(newDate);
-    expect(claim.history!.length).toBe(4);
-    const h4 = claim.history![3];
+    expect(history.length).toBe(4);
+    expect(history[3]).toBeDefined();
+    const h4 = history[3];
+    if (!h4) throw new Error('Missing history entry h4');
     expect(h4.description).toContain('Cambio de fecha');
     expect(h4.description).toContain(newDate.toISOString());
     expect(h4.description).toContain('Estado:');
@@ -81,8 +90,10 @@ describe('Claim entity (history)', () => {
     // changePriority should add an entry and keep state
     const newPriority = Priority.create(2, 'media');
     claim.changePriority(newPriority);
-    expect(claim.history!.length).toBe(5);
-    const h5 = claim.history![4];
+    expect(history.length).toBe(5);
+    expect(history[4]).toBeDefined();
+    const h5 = history[4];
+    if (!h5) throw new Error('Missing history entry h5');
     expect(h5.description).toContain('Cambio de prioridad');
     expect(h5.description).toContain('Estado:');
     expect(h5.state).toBe(pending);
@@ -105,9 +116,13 @@ describe('Claim entity (history)', () => {
     claim.start(inProgress);
     expect(claim.state).toBe(inProgress);
     expect(claim.history).toBeDefined();
-    expect(claim.history!.length).toBe(1);
-    expect(claim.history![0].description).toContain('Inicio de gestión');
-    expect(claim.history![0].state).toBe(inProgress);
+    const history2 = claim.history;
+    expect(history2.length).toBe(1);
+    expect(history2[0]).toBeDefined();
+    const entry2 = history2[0];
+    if (!entry2) throw new Error('Missing history entry entry2');
+    expect(entry2.description).toContain('Inicio de gestión');
+    expect(entry2.state).toBe(inProgress);
   });
 
   it('resolve sets resolver id and records history', () => {
@@ -124,9 +139,13 @@ describe('Claim entity (history)', () => {
     claim.resolve('resolver-1');
     expect(claim.claimResolverId).toBe('resolver-1');
     expect(claim.history).toBeDefined();
-    expect(claim.history!.length).toBe(1);
-    expect(claim.history![0].description).toContain('Reclamo resuelto');
-    expect(claim.history![0].state).toBe(resolved);
+    const history3 = claim.history;
+    expect(history3.length).toBe(1);
+    expect(history3[0]).toBeDefined();
+    const entry3 = history3[0];
+    if (!entry3) throw new Error('Missing history entry entry3');
+    expect(entry3.description).toContain('Reclamo resuelto');
+    expect(entry3.state).toBe(resolved);
   });
 
   it('cancel records cancellation info and history with motivo', () => {
@@ -148,9 +167,13 @@ describe('Claim entity (history)', () => {
     expect(claim.cancellation).toBe(canc);
     expect(claim.state).toBe(cancelled);
     expect(claim.history).toBeDefined();
-    expect(claim.history!.length).toBe(1);
-    expect(claim.history![0].description).toContain('Reclamo cancelado');
-    expect(claim.history![0].description).toContain(canc.name);
-    expect(claim.history![0].state).toBe(cancelled);
+    const history4 = claim.history;
+    expect(history4.length).toBe(1);
+    expect(history4[0]).toBeDefined();
+    const entry4 = history4[0];
+    if (!entry4) throw new Error('Missing history entry entry4');
+    expect(entry4.description).toContain('Reclamo cancelado');
+    expect(entry4.description).toContain(canc.name);
+    expect(entry4.state).toBe(cancelled);
   });
 });

@@ -25,7 +25,7 @@ export class Area {
   claims?: Claim[];
 
   @OneToMany(() => SubArea, (subarea) => subarea.area)
-  subAreas: SubArea[];
+  subAreas: SubArea[] = [];
 
   @ManyToOne(() => Project, (project) => project.areas, {
     nullable: true,

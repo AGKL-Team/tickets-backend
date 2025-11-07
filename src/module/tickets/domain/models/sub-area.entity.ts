@@ -11,15 +11,15 @@ import { Claim } from './claim.entity';
 @Entity({ name: 'subareas' })
 export class SubArea {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ length: 50 })
-  name: string;
+  name!: string;
   @Column({ length: 255, default: '', nullable: true })
-  description: string;
+  description!: string;
 
   @ManyToOne(() => Area, (area) => area.subAreas)
-  area: Area;
+  area!: Area;
 
   @OneToMany(() => Claim, (claim) => claim.subArea)
   claims?: Claim[];

@@ -14,8 +14,8 @@ export class UpdateRating {
   async execute(
     ratingId: string,
     score: number,
-    feedback: string,
     userId: string,
+    feedback?: string,
   ) {
     const rating = await this.ratingService.findById(ratingId);
 

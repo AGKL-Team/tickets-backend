@@ -3,15 +3,20 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Optional,
 } from '@nestjs/common';
+import { UserArea } from '../../domain/models';
 import {
   AreaService,
   ClaimCategoryService,
   ClaimService,
   PriorityService,
+  UserAreaService,
   UserRoleService,
 } from '../../infrastructure/services';
 import { UpdateClaimDto } from '../dto/update-claim.dto';
+
+// (role guards are provided by ../helpers/role-guards)
 
 @Injectable()
 export class UpdateClaim {
@@ -21,6 +26,7 @@ export class UpdateClaim {
     private readonly categoryService: ClaimCategoryService,
     private readonly areaService: AreaService,
     private readonly userRoleService: UserRoleService,
+    @Optional() private readonly userAreaService?: UserAreaService,
   ) {}
 
   async execute(id: string, request: UpdateClaimDto, userId: string) {
@@ -32,21 +38,11 @@ export class UpdateClaim {
     const userRoles = await this.userRoleService.findByUserId(userId);
 
     // fetch roles and states (defensive: tests may provide partial mocks)
-    const isAdmin = userRoles.some((r: any) =>
-      typeof r.isAdmin === 'function'
-        ? r.isAdmin()
-        : r.role?.isAdmin && r.role.isAdmin(),
-    );
+    const isAdmin = userRoles.some((r) => r.isAdmin());
 
-    const isClient = userRoles.some((r: any) =>
-      typeof r.isClient === 'function'
-        ? r.isClient()
-        : r.role?.isClient && r.role.isClient(),
-    );
+    const isClient = userRoles.some((r) => r.isClient());
 
-    const isAreaManager = userRoles.some(
-      (r: any) => r.role?.isAreaManager && r.role.isAreaManager(),
-    );
+    const isAreaManager = userRoles.some((r) => r.isAreaManager());
 
     // Only allow update when claim is in 'pending' or 'in progress'
     if (!isPending && !isInProgress) {
@@ -106,6 +102,20 @@ export class UpdateClaim {
         throw new BadRequestException(
           'Solo se puede asignar una prioridad a un reclamo en estado pendiente o en progreso.',
         );
+      }
+
+      // if operator is areaManager (not admin), ensure they are assigned to the claim's area
+      if (!isAdmin && isAreaManager) {
+        if (this.userAreaService) {
+          const operatorAreas = await this.userAreaService.findByUserId(userId);
+          const assignedToClaimArea = operatorAreas.some(
+            (ua: UserArea) => ua.area?.id === existing.area?.id,
+          );
+          if (!assignedToClaimArea)
+            throw new ForbiddenException(
+              'No tiene permisos para asignar prioridad en esta área',
+            );
+        }
       }
 
       existing.changePriority(priority);
@@ -172,6 +182,23 @@ export class UpdateClaim {
         );
 
       const area = await this.areaService.findById(request.areaId);
+      // if operator is areaManager (not admin), ensure they are assigned to both source and destination areas
+      if (!isAdmin && isAreaManager) {
+        if (this.userAreaService) {
+          const operatorAreas = await this.userAreaService.findByUserId(userId);
+          const assignedToSource = operatorAreas.some(
+            (ua: UserArea) => ua.area?.id === existing.area?.id,
+          );
+          const assignedToDest = operatorAreas.some(
+            (ua: UserArea) => ua.area?.id === area.id,
+          );
+          if (!assignedToSource || !assignedToDest)
+            throw new ForbiddenException(
+              'No tiene permisos sobre el área origen o destino para modificar este reclamo',
+            );
+        }
+      }
+
       existing.changeArea(area);
     }
 

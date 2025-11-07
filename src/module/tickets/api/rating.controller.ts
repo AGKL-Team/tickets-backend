@@ -44,8 +44,8 @@ export class RatingController {
     return this.updateRating.execute(
       ratingId,
       body.score,
+      user.id,
       body.feedback,
-      user.id!,
     );
   }
 

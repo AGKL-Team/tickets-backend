@@ -20,13 +20,13 @@ export class CreateClaimDto {
   date?: string;
 
   @IsUUID()
-  priorityId: string;
+  priorityId!: string;
 
   @IsUUID()
-  categoryId: string;
+  categoryId!: string;
 
   @IsUUID()
-  areaId: string;
+  areaId!: string;
 
   @IsOptional()
   @IsUUID()
