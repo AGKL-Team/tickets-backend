@@ -11,9 +11,9 @@ import {
 import { User } from '@supabase/supabase-js';
 import { UserFromRequest } from '../../core/auth/infrastructure/decorators/user.decorator';
 import {
+  FirebaseAuthGuard,
   Roles,
   RolesGuard,
-  SupabaseAuthGuard,
 } from '../../core/auth/infrastructure/guard';
 import { CreateClaimDto } from '../application/dto/create-claim.dto';
 import { UpdateClaimDto } from '../application/dto/update-claim.dto';
@@ -21,7 +21,7 @@ import { CreateClaim } from '../application/useCases/create-claim.use-case';
 import { UpdateClaim } from '../application/useCases/update-claim.use-case';
 import { ClaimService } from '../infrastructure/services/claim.service';
 
-@UseGuards(SupabaseAuthGuard, RolesGuard)
+@UseGuards(FirebaseAuthGuard, RolesGuard)
 @Controller('claims')
 export class ClaimController {
   constructor(

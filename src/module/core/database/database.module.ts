@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import supabaseConfig from '../../../config/supabase.config';
-import { SupabaseService } from './services/supabase.service';
+import supabaseConfig from '../../../config/firebase.config';
+import { FirebaseService } from './services/firebase.service';
 
 /**
  * Database module
  */
 @Module({
   imports: [ConfigModule.forFeature(supabaseConfig)],
-  providers: [SupabaseService],
-  exports: [SupabaseService],
+  providers: [FirebaseService],
+  exports: [FirebaseService],
 })
 export class DatabaseModule {}

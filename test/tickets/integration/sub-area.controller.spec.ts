@@ -12,7 +12,7 @@ import { SubArea } from '../../../src/module/tickets/domain/models/sub-area.enti
 import { AreaService } from '../../../src/module/tickets/infrastructure/services/area.service';
 import { SubAreaService } from '../../../src/module/tickets/infrastructure/services/sub-area.service';
 import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
-import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
+import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
 
 describe('SubAreaController (integration)', () => {
   let controller: SubAreaController;
@@ -42,7 +42,7 @@ describe('SubAreaController (integration)', () => {
           provide: getRepositoryToken(Area),
           useClass: Repository,
         },
-        SupabaseTestProvider,
+        FirebaseTestProvider,
       ],
     }).compile();
 

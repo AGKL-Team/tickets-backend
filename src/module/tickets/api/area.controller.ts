@@ -10,9 +10,9 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import {
+  FirebaseAuthGuard,
   Roles,
   RolesGuard,
-  SupabaseAuthGuard,
 } from '../../core/auth/infrastructure/guard';
 import { CreateAreaDto } from '../application/dto/create-area.dto';
 import { UpdateAreaDto } from '../application/dto/update-area.dto';
@@ -20,7 +20,7 @@ import { CreateArea } from '../application/useCases/create-area.use-case';
 import { UpdateArea } from '../application/useCases/update-area.use-case';
 import { AreaService } from '../infrastructure/services/area.service';
 
-@UseGuards(SupabaseAuthGuard, RolesGuard)
+@UseGuards(FirebaseAuthGuard, RolesGuard)
 @Controller('areas')
 export class AreaController {
   constructor(

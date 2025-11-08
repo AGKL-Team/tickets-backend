@@ -2,9 +2,9 @@ import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { User } from '@supabase/supabase-js';
 import { UserFromRequest } from '../../core/auth/infrastructure/decorators/user.decorator';
 import {
+  FirebaseAuthGuard,
   Roles,
   RolesGuard,
-  SupabaseAuthGuard,
 } from '../../core/auth/infrastructure/guard';
 import { AssignResolverDto } from '../application/dto/assign-resolver.dto';
 import { AssignSubAreaDto } from '../application/dto/assign-subarea.dto';
@@ -13,7 +13,7 @@ import { AssignResolver } from '../application/useCases/assign-resolver.use-case
 import { AssignSubArea } from '../application/useCases/assign-subarea.use-case';
 import { TransferArea } from '../application/useCases/transfer-area.use-case';
 
-@UseGuards(SupabaseAuthGuard, RolesGuard)
+@UseGuards(FirebaseAuthGuard, RolesGuard)
 @Controller('claims')
 export class AssignmentController {
   constructor(

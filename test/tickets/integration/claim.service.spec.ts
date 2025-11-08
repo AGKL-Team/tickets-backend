@@ -9,7 +9,7 @@ import { fakeAdminUserRole } from '../../shared/fakes/role.admin.fake';
 import { fakeClientUserRole } from '../../shared/fakes/role.client.fake';
 import { fakeAdminUser } from '../../shared/fakes/user.admin.fake';
 import { fakeClientUser } from '../../shared/fakes/user.client.fake';
-import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
+import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
 
 describe('ClaimService', () => {
   let service: ClaimService;
@@ -28,7 +28,7 @@ describe('ClaimService', () => {
         ClaimService,
         { provide: getRepositoryToken(Claim), useClass: Repository },
         { provide: UserRoleService, useValue: userRoleServiceMock },
-        SupabaseTestProvider,
+        FirebaseTestProvider,
       ],
     }).compile();
 

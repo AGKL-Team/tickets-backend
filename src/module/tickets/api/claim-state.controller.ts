@@ -9,11 +9,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from '../../core/auth/infrastructure/guard';
-import { SupabaseAuthGuard } from '../../core/auth/infrastructure/guard/supabase-auth.guard';
+import { FirebaseAuthGuard } from '../../core/auth/infrastructure/guard/firebase-auth.guard';
 import { ClaimState } from '../domain/models/claim-state.entity';
 import { ClaimStateService } from '../infrastructure/services/claim-state.service';
 
-@UseGuards(SupabaseAuthGuard)
+@UseGuards(FirebaseAuthGuard)
 @Controller('claim-states')
 export class ClaimStateController {
   constructor(private readonly service: ClaimStateService) {}

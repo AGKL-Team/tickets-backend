@@ -11,7 +11,7 @@ import { Area } from '../../../src/module/tickets/domain/models/area.entity';
 import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
 import { AreaService } from '../../../src/module/tickets/infrastructure/services/area.service';
 import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
-import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
+import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
 
 describe('AreaController (integration)', () => {
   let controller: AreaController;
@@ -35,7 +35,7 @@ describe('AreaController (integration)', () => {
           provide: getRepositoryToken(Area),
           useClass: Repository,
         },
-        SupabaseTestProvider,
+        FirebaseTestProvider,
       ],
     }).compile();
 

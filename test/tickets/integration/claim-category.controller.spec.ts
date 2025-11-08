@@ -10,7 +10,7 @@ import { UpdateClaimCategory } from '../../../src/module/tickets/application/use
 import { ClaimCategory } from '../../../src/module/tickets/domain/models/claim-category.entity';
 import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
 import { ClaimCategoryService } from '../../../src/module/tickets/infrastructure/services/claim-category.service';
-import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
+import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
 
 describe('ClaimCategoryController (integration)', () => {
   let controller: ClaimCategoryController;
@@ -33,7 +33,7 @@ describe('ClaimCategoryController (integration)', () => {
           provide: getRepositoryToken(ClaimCategory),
           useClass: Repository,
         },
-        SupabaseTestProvider,
+        FirebaseTestProvider,
       ],
     }).compile();
 

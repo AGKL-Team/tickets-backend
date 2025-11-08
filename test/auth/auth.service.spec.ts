@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing';
 import { SignInRequest } from '../../src/module/core/auth/application/requests/sign-in-request';
 import { SignUpRequest } from '../../src/module/core/auth/application/requests/sign-up-request';
 import { AuthService } from '../../src/module/core/auth/infrastructure/services/auth.service';
-import { SupabaseService } from '../../src/module/core/database/services/supabase.service';
+import { FirebaseService } from '../../src/module/core/database/services/firebase.service';
 import { ConfigTestProvider } from '../shared/providers/config-test.provider';
 
 describe('AuthService', () => {
@@ -37,7 +37,7 @@ describe('AuthService', () => {
       imports: [ConfigModule],
       providers: [
         AuthService,
-        { provide: SupabaseService, useValue: supabaseService },
+        { provide: FirebaseService, useValue: supabaseService },
         ConfigTestProvider,
       ],
     }).compile();

@@ -10,14 +10,14 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Roles } from '../../core/auth/infrastructure/guard';
-import { SupabaseAuthGuard } from '../../core/auth/infrastructure/guard/supabase-auth.guard';
+import { FirebaseAuthGuard } from '../../core/auth/infrastructure/guard/firebase-auth.guard';
 import { CreateClaimCategoryDto } from '../application/dto/create-claim-category.dto';
 import { UpdateClaimCategoryDto } from '../application/dto/update-claim-category.dto';
 import { CreateClaimCategory } from '../application/useCases/create-claim-category.use-case';
 import { UpdateClaimCategory } from '../application/useCases/update-claim-category.use-case';
 import { ClaimCategoryService } from '../infrastructure/services/claim-category.service';
 
-@UseGuards(SupabaseAuthGuard)
+@UseGuards(FirebaseAuthGuard)
 @Controller('claim-categories')
 export class ClaimCategoryController {
   constructor(

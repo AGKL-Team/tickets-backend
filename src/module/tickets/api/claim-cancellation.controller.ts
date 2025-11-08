@@ -8,11 +8,11 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { SupabaseAuthGuard } from '../../core/auth/infrastructure/guard/supabase-auth.guard';
+import { FirebaseAuthGuard } from '../../core/auth/infrastructure/guard/firebase-auth.guard';
 import { ClaimCancellation } from '../domain/models/claim-cancellation.entity';
 import { ClaimCancellationService } from '../infrastructure/services/claim-cancellation.service';
 
-@UseGuards(SupabaseAuthGuard)
+@UseGuards(FirebaseAuthGuard)
 @Controller('claim-cancellations')
 export class ClaimCancellationController {
   constructor(private readonly service: ClaimCancellationService) {}

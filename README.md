@@ -9,7 +9,7 @@ Aplicación para gestionar reclamos de clientes. Permite a los clientes abrir re
 - Registro y gestión de reclamos (crear, actualizar, consultar, cancelar)
 - Gestión de prioridades y categorías de reclamos
 - Control de estados del reclamo (pending, in progress, resolved, cancelled)
-- Autenticación vía Supabase y autorización por roles (admin, staff, client)
+- Autenticación vía Firebase y autorización por roles (admin, staff, client)
 
 ## 📋 Requisitos previos
 

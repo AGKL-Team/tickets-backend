@@ -24,7 +24,7 @@ import { ClaimCriticalityService } from '../../../src/module/tickets/infrastruct
 import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
 import { ProjectService } from '../../../src/module/tickets/infrastructure/services/project.service';
 import { fakeApplicationUser } from '../../shared/fakes/user.fake';
-import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
+import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
 
 describe('ClaimController', () => {
   let controller: ClaimController;
@@ -73,7 +73,7 @@ describe('ClaimController', () => {
           provide: getRepositoryToken(ClaimCriticality),
           useClass: Repository,
         },
-        SupabaseTestProvider,
+        FirebaseTestProvider,
       ],
     }).compile();
 

@@ -10,7 +10,7 @@ import { UpdatePriority } from '../../../src/module/tickets/application/useCases
 import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
 import { Priority } from '../../../src/module/tickets/domain/models/priority.entity';
 import { PriorityService } from '../../../src/module/tickets/infrastructure/services/priority.service';
-import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
+import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
 
 describe('PriorityController (integration)', () => {
   let controller: PriorityController;
@@ -33,7 +33,7 @@ describe('PriorityController (integration)', () => {
           provide: getRepositoryToken(Claim),
           useClass: Repository,
         },
-        SupabaseTestProvider,
+        FirebaseTestProvider,
       ],
     }).compile();
 
