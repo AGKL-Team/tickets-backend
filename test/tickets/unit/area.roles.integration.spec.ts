@@ -2,6 +2,7 @@ import { Reflector } from '@nestjs/core';
 import { RolesGuard } from '../../../src/module/core/auth/infrastructure/guard/roles.guard';
 import { AreaController } from '../../../src/module/tickets/api/area.controller';
 import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
+import { adminUserRole, clientUserRole } from '../../shared/helpers/role-fakes';
 
 function createExecutionContext(req: any, handler?: any, cls?: any) {
   return {
@@ -23,7 +24,7 @@ describe('AreaController Roles integration', () => {
   it('allows access to create for admin user', async () => {
     const req = { user: { id: 'u-admin' } } as any;
     (userRoleService.findByUserId as jest.Mock).mockResolvedValueOnce([
-      { role: { name: 'admin' } },
+      adminUserRole('u-admin'),
     ] as any);
 
     const ctx = createExecutionContext(
@@ -37,7 +38,7 @@ describe('AreaController Roles integration', () => {
   it('denies access to create for non-admin user', async () => {
     const req = { user: { id: 'u-client' } } as any;
     (userRoleService.findByUserId as jest.Mock).mockResolvedValueOnce([
-      { role: { name: 'client' } },
+      clientUserRole('u-client'),
     ] as any);
 
     const ctx = createExecutionContext(
