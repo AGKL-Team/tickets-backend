@@ -99,12 +99,12 @@ describe('ClaimService', () => {
       ]);
 
       const findOneSpy = jest
-        .spyOn(claimRepository, 'findOneBy' as any)
-        .mockResolvedValue(claim as any);
+        .spyOn(claimRepository, 'findOneBy')
+        .mockResolvedValue(claim);
 
       const res = await service.findById('c1', fakeClientUser.id);
 
-      expect(findOneSpy).toHaveBeenCalledWith('c1', fakeClientUser.id);
+      expect(findOneSpy).toHaveBeenCalledWith({ _id: 'c1' });
       expect(res).toBe(claim);
     });
 

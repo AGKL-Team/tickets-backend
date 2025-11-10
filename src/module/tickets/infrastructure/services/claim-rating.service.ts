@@ -1,13 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { ClaimRating } from '../../domain/models/claim-rating.entity';
 
 @Injectable()
 export class ClaimRatingService {
   constructor(
     @InjectRepository(ClaimRating)
-    private readonly ratingRepository: Repository<ClaimRating>,
+    private readonly ratingRepository: MongoRepository<ClaimRating>,
   ) {}
 
   async save(entity: ClaimRating): Promise<ClaimRating> {
@@ -15,7 +16,9 @@ export class ClaimRatingService {
   }
 
   async findById(id: string): Promise<ClaimRating> {
-    const r = await this.ratingRepository.findOneBy({ id } as any);
+    const r = await this.ratingRepository.findOneBy({
+      _id: toObjectId(id),
+    });
     if (!r)
       throw new NotFoundException(
         `No se encuentra la calificación con ID ${id}`,

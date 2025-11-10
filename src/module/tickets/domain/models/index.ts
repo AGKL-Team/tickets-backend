@@ -13,4 +13,5 @@ export * from './rating-category.entity';
 export * from './role.entity';
 export * from './sub-area.entity';
 export * from './user-area.entity';
+export * from './user-project.entity';
 export * from './user-role.entity';

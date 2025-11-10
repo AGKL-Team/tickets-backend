@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { Claim } from '../../domain/models/claim.entity';
 import { SubArea } from '../../domain/models/sub-area.entity';
 import { SubAreaRepository } from '../../domain/repositories/sub-area.repository.interface';
@@ -9,19 +10,31 @@ import { SubAreaRepository } from '../../domain/repositories/sub-area.repository
 export class SubAreaService implements SubAreaRepository {
   constructor(
     @InjectRepository(SubArea)
-    private readonly repo: Repository<SubArea>,
+    private readonly repo: MongoRepository<SubArea>,
     @InjectRepository(Claim)
-    private readonly claimRepo: Repository<Claim>,
+    private readonly claimRepo: MongoRepository<Claim>,
   ) {}
 
-  async findById(id: string): Promise<SubArea> {
-    const s = await this.repo.findOneBy({ id } as any);
+  async findById(id: string, projectId?: string): Promise<SubArea> {
+    if (projectId) {
+      const s = await this.repo.findOne({
+        where: { _id: toObjectId(id), project: { id: projectId } } as any,
+      });
+      if (!s)
+        throw new NotFoundException(`No se encuentra la sub-área con ID ${id}`);
+      return s;
+    }
+
+    const s = await this.repo.findOneBy({ id: toObjectId(id) } as any);
     if (!s)
       throw new NotFoundException(`No se encuentra la sub-área con ID ${id}`);
     return s;
   }
 
-  async findAll(): Promise<SubArea[]> {
+  async findAll(projectId?: string): Promise<SubArea[]> {
+    if (projectId) {
+      return this.repo.find({ where: { project: { id: projectId } } as any });
+    }
     return this.repo.find();
   }
 

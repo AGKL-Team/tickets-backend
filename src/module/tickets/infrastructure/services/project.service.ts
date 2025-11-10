@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { Claim } from '../../domain/models/claim.entity';
 import { Project } from '../../domain/models/project.entity';
 
@@ -8,17 +9,17 @@ import { Project } from '../../domain/models/project.entity';
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
-    private readonly repo: Repository<Project>,
+    private readonly repo: MongoRepository<Project>,
     @InjectRepository(Claim)
-    private readonly claimRepo: Repository<Claim>,
+    private readonly claimRepo: MongoRepository<Claim>,
   ) {}
 
   async save(entity: Project): Promise<Project> {
-    return this.repo.save(entity as any);
+    return this.repo.save(entity);
   }
 
   async findById(id: string): Promise<Project> {
-    const p = await this.repo.findOneBy({ id } as any);
+    const p = await this.repo.findOneBy({ _id: toObjectId(id) });
     if (!p)
       throw new NotFoundException(`No se encuentra el proyecto con ID ${id}`);
     return p;

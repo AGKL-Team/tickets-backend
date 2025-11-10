@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { Role } from '../../domain/models/role.entity';
 import { RoleRepository } from '../../domain/repositories/role.repository.interface';
 
@@ -8,7 +9,7 @@ import { RoleRepository } from '../../domain/repositories/role.repository.interf
 export class RoleService implements RoleRepository {
   constructor(
     @InjectRepository(Role)
-    private readonly repo: Repository<Role>,
+    private readonly repo: MongoRepository<Role>,
   ) {}
 
   async create(entity: Role): Promise<Role> {
@@ -16,7 +17,7 @@ export class RoleService implements RoleRepository {
   }
 
   async findById(id: string): Promise<Role> {
-    const r = await this.repo.findOneBy({ id } as any);
+    const r = await this.repo.findOneBy({ id: toObjectId(id) } as any);
     if (!r) throw new NotFoundException(`No se encuentra el rol con ID ${id}`);
     return r;
   }

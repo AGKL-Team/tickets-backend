@@ -4,8 +4,9 @@ import { Test } from '@nestjs/testing';
 import { SignInRequest } from '../../src/module/core/auth/application/requests/sign-in-request';
 import { SignUpRequest } from '../../src/module/core/auth/application/requests/sign-up-request';
 import { AuthService } from '../../src/module/core/auth/infrastructure/services/auth.service';
-import { ConfigTestProvider } from '../shared/providers/config-test.provider';
 import { SupabaseService } from '../../src/module/core/database/services/supabase.service';
+import { UserRoleService } from '../../src/module/tickets/infrastructure/services/user-role.service';
+import { ConfigTestProvider } from '../shared/providers/config-test.provider';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -38,6 +39,11 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         { provide: SupabaseService, useValue: supabaseService },
+        // provide a simple mock for UserRoleService used by AuthService
+        {
+          provide: UserRoleService,
+          useValue: { findByUserId: jest.fn().mockResolvedValue([]) },
+        },
         ConfigTestProvider,
       ],
     }).compile();
@@ -139,7 +145,8 @@ describe('AuthService', () => {
     expect(result).toEqual({
       access_token: 'token',
       expires_in: 3600,
-      email: request.email,
+      user: { id: undefined, email: request.email, user_metadata: undefined },
+      roles: [],
     });
     expect(supabaseClient.auth.signInWithPassword).toHaveBeenCalledWith(
       request,

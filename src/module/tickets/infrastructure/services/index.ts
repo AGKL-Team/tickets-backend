@@ -12,4 +12,5 @@ export * from './rating-category.service';
 export * from './role.service';
 export * from './sub-area.service';
 export * from './user-area.service';
+export * from './user-project.service';
 export * from './user-role.service';

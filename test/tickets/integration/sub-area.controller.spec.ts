@@ -4,10 +4,9 @@ import { CreateSubAreaDto } from '../../../src/module/tickets/application/dto/cr
 import { UpdateSubAreaDto } from '../../../src/module/tickets/application/dto/update-sub-area.dto';
 import { CreateSubArea } from '../../../src/module/tickets/application/useCases/create-sub-area.use-case';
 import { UpdateSubArea } from '../../../src/module/tickets/application/useCases/update-sub-area.use-case';
-import { AreaFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/area.firestore.repository';
-import { ClaimFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim.firestore.repository';
-import { SubAreaFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/sub-area.firestore.repository';
+// repository providers removed: tests use service/use-case mocks instead
 import { AreaService } from '../../../src/module/tickets/infrastructure/services/area.service';
+import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
 import { SubAreaService } from '../../../src/module/tickets/infrastructure/services/sub-area.service';
 import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
 import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
@@ -22,35 +21,27 @@ describe('SubAreaController (integration)', () => {
     const module = await Test.createTestingModule({
       controllers: [SubAreaController],
       providers: [
-        SubAreaService,
-        CreateSubArea,
-        UpdateSubArea,
+        {
+          provide: SubAreaService,
+          useValue: {
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            delete: jest.fn(),
+          },
+        },
+        { provide: CreateSubArea, useValue: { execute: jest.fn() } },
+        { provide: UpdateSubArea, useValue: { execute: jest.fn() } },
         // AreaService required by use-cases
-        AreaService,
+        { provide: AreaService, useValue: { findById: jest.fn() } },
         { provide: UserRoleService, useValue: { findByUserId: jest.fn() } },
         {
-          provide: ClaimFirestoreRepository,
+          provide: ClaimService,
           useValue: {
             findAll: jest.fn(),
             findById: jest.fn(),
             save: jest.fn(),
             delete: jest.fn(),
           },
-        },
-        {
-          provide: SubAreaFirestoreRepository,
-          useValue: {
-            findAll: jest.fn(),
-            findById: jest.fn(),
-            save: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
-            findByName: jest.fn(),
-          },
-        },
-        {
-          provide: AreaFirestoreRepository,
-          useValue: { findById: jest.fn(), findAll: jest.fn() },
         },
         SupabaseTestProvider,
       ],

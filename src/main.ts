@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './application/app.module';
+import { ObjectIdToStringInterceptor } from './module/core/interceptors/objectid-to-string.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -21,6 +22,9 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
+
+  // Convert any Mongo ObjectId instances in responses to hex-string automatically
+  app.useGlobalInterceptors(new ObjectIdToStringInterceptor());
 
   await app.listen(3000);
 }

@@ -6,6 +6,7 @@ export * from './claim-state.controller';
 export * from './claim.controller';
 export * from './comment.controller';
 export * from './priority.controller';
+export * from './project.controller';
 export * from './rating.controller';
 export * from './role.controller';
 export * from './sub-area.controller';

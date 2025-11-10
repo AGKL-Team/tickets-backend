@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateAreaDto {
+export class CreateProjectDto {
   @IsNotEmpty()
   @IsString()
   name!: string;
@@ -8,8 +8,4 @@ export class CreateAreaDto {
   @IsOptional()
   @IsString()
   description?: string;
-
-  @IsOptional()
-  @IsString()
-  projectId?: string;
 }

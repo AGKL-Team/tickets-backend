@@ -1,27 +1,39 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { Area } from '../../domain/models/area.entity';
 import { Claim } from '../../domain/models/claim.entity';
-import { SubArea } from '../../domain/models/sub-area.entity';
 import { AreaRepository } from '../../domain/repositories/area.repository.interface';
 
 @Injectable()
 export class AreaService implements AreaRepository {
   constructor(
     @InjectRepository(Area)
-    private readonly repo: Repository<Area>,
+    private readonly repo: MongoRepository<Area>,
     @InjectRepository(Claim)
-    private readonly claimRepo: Repository<Claim>,
+    private readonly claimRepo: MongoRepository<Claim>,
   ) {}
 
-  async findById(id: string): Promise<Area> {
-    const a = await this.repo.findOneBy({ id } as any);
+  async findById(id: string, projectId?: string): Promise<Area> {
+    if (projectId) {
+      const a = await this.repo.findOne({
+        where: { _id: toObjectId(id), project: { id: projectId } } as any,
+      });
+      if (!a)
+        throw new NotFoundException(`No se encuentra el área con ID ${id}`);
+      return a;
+    }
+
+    const a = await this.repo.findOneBy({ _id: toObjectId(id) });
     if (!a) throw new NotFoundException(`No se encuentra el área con ID ${id}`);
     return a;
   }
 
-  async findAll(): Promise<Area[]> {
+  async findAll(projectId?: string): Promise<Area[]> {
+    if (projectId) {
+      return this.repo.find({ where: { project: { id: projectId } } as any });
+    }
     return this.repo.find();
   }
 
@@ -38,34 +50,31 @@ export class AreaService implements AreaRepository {
   }
 
   async findByName(name: string): Promise<Area> {
-    const a = await this.repo.findOneBy({ name } as any);
+    const a = await this.repo.findOneBy({ name });
     if (!a)
       throw new NotFoundException(`No se encuentra el área con nombre ${name}`);
     return a;
   }
 
-  async addSubAreaId(areaId: string, subAreaId: string): Promise<void> {
-    const area = await this.repo.findOneBy({ id: areaId } as any);
-    if (!area)
-      throw new NotFoundException(`No se encuentra el área con ID ${areaId}`);
-    if (!area.subAreas) area.subAreas = [];
-    const sa = new SubArea();
-    sa.id = subAreaId;
-    area.subAreas.push(sa);
-    await this.repo.save(area as any);
-  }
+  async findByNameInProject(
+    name: string,
+    projectId?: string,
+  ): Promise<Area | null> {
+    // when projectId is provided, search within that project's areas
+    if (projectId) {
+      const a = await this.repo.findOne({
+        where: { name, project: { id: projectId } },
+      });
+      return a ?? null;
+    }
 
-  async removeSubAreaId(areaId: string, subAreaId: string): Promise<void> {
-    const area = await this.repo.findOneBy({ id: areaId } as any);
-    if (!area)
-      throw new NotFoundException(`No se encuentra el área con ID ${areaId}`);
-    if (!area.subAreas) return;
-    area.subAreas = area.subAreas.filter((s) => s.id !== subAreaId);
-    await this.repo.save(area as any);
+    // when no projectId is provided, search for areas without a project (global areas)
+    const a = await this.repo.findOne({ where: { name, project: null } });
+    return a ?? null;
   }
 
   async hasClaimsAssociated(id: string) {
-    const c = await this.claimRepo.findOneBy({ 'area.id': id } as any);
+    const c = await this.claimRepo.findOneBy({ 'area.id': id });
     return !!c;
   }
 }

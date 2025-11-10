@@ -14,7 +14,8 @@ import { SupabaseService } from './services/supabase.service';
     // TypeORM MongoDB connection. Uses MONGODB_URL env var or local default.
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: process.env.MONGODB_URL || 'mongodb://localhost:27017/tickets',
+      url: process.env.MONGODB_URL,
+      database: process.env.MONGODB_DB_NAME,
       synchronize: true,
       // point to compiled JS or TS entity files depending on runtime
       entities: [__dirname + '/../../tickets/domain/models/*.{ts,js}'],

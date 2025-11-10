@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
+import { UserRoleService } from '../../../../tickets/infrastructure/services/user-role.service';
 import { SupabaseService } from '../../../database/services/supabase.service';
 import { SignInRequest } from '../../application/requests/sign-in-request';
 import { SignUpRequest } from '../../application/requests/sign-up-request';
@@ -9,7 +10,10 @@ import { ApplicationUserResponse } from '../../application/responses/user-respon
 export class AuthService {
   private readonly supabaseClient: SupabaseClient;
 
-  constructor(private readonly supabaseService: SupabaseService) {
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly userRoleService: UserRoleService,
+  ) {
     this.supabaseClient = this.supabaseService.getClient();
   }
 
@@ -71,11 +75,30 @@ export class AuthService {
       return;
     }
 
-    // 3. Return the access token and its expiration time
+    // 3. Return the access token and its expiration time and user info
+    const user = response.data.user;
+
+    // fetch user roles from DB to include in the login response (front needs them)
+    let roles: string[] = [];
+    try {
+      const userRoles = await this.userRoleService.findByUserId(user.id);
+          roles = userRoles
+            .map((ur) => ur.role?.name)
+            .filter((n) => !!n);
+    } catch {
+      // swallow errors and return empty roles if role lookup fails
+      roles = [];
+    }
+
     return {
       access_token: response.data.session.access_token,
       expires_in: response.data.session.expires_in,
-      email: response.data.user.email,
+      user: {
+        id: user.id,
+        email: user.email,
+        user_metadata: user.user_metadata,
+      },
+      roles,
     } as ApplicationUserResponse;
   }
 

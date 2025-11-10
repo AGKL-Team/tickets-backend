@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { Claim } from '../../domain/models/claim.entity';
 import { Priority } from '../../domain/models/priority.entity';
 import { PriorityRepository } from '../../domain/repositories/priority.repository.interface';
@@ -9,9 +10,9 @@ import { PriorityRepository } from '../../domain/repositories/priority.repositor
 export class PriorityService implements PriorityRepository {
   constructor(
     @InjectRepository(Priority)
-    private readonly priorityRepository: Repository<Priority>,
+    private readonly priorityRepository: MongoRepository<Priority>,
     @InjectRepository(Claim)
-    private readonly claimRepository: Repository<Claim>,
+    private readonly claimRepository: MongoRepository<Claim>,
   ) {}
 
   async save(entity: Priority): Promise<Priority> {
@@ -19,7 +20,9 @@ export class PriorityService implements PriorityRepository {
   }
 
   async findById(id: string): Promise<Priority> {
-    const p = await this.priorityRepository.findOneBy({ id } as any);
+    const p = await this.priorityRepository.findOneBy({
+      _id: toObjectId(id),
+    });
     if (!p)
       throw new NotFoundException(`No se encuentra la prioridad con ID ${id}`);
     return p;
@@ -38,7 +41,7 @@ export class PriorityService implements PriorityRepository {
   }
 
   async findByNumber(number: number): Promise<Priority | null> {
-    const p = await this.priorityRepository.findOneBy({ number } as any);
+    const p = await this.priorityRepository.findOneBy({ number });
     return p ?? null;
   }
 

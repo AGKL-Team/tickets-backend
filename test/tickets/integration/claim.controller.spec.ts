@@ -3,13 +3,7 @@ import { ClaimController } from '../../../src/module/tickets/api/claim.controlle
 import { CreateClaimDto } from '../../../src/module/tickets/application/dto/create-claim.dto';
 import { CreateClaim } from '../../../src/module/tickets/application/useCases/create-claim.use-case';
 import { UpdateClaim } from '../../../src/module/tickets/application/useCases/update-claim.use-case';
-import { AreaFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/area.firestore.repository';
-import { ClaimCategoryFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim-category.firestore.repository';
-import { ClaimCriticalityFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim-criticality.firestore.repository';
-import { ClaimFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim.firestore.repository';
-import { PriorityFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/priority.firestore.repository';
-import { ProjectFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/project.firestore.repository';
-import { UserRoleFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/user-role.firestore.repository';
+// repository providers removed: tests use service/use-case mocks instead
 import {
   AreaService,
   ClaimCategoryService,
@@ -32,43 +26,29 @@ describe('ClaimController', () => {
     const module = await Test.createTestingModule({
       controllers: [ClaimController],
       providers: [
-        ClaimService,
-        UserRoleService,
-        PriorityService,
-        ClaimCategoryService,
-        AreaService,
-        ProjectService,
-        ClaimCriticalityService,
-        CreateClaim,
-        UpdateClaim,
+        // provide service and use-case mocks so controller tests don't need full DI graph
         {
-          provide: ClaimFirestoreRepository,
+          provide: ClaimService,
           useValue: {
-            findOne: jest.fn(),
             findAll: jest.fn(),
-            save: jest.fn(),
+            findById: jest.fn(),
             delete: jest.fn(),
           },
         },
+        { provide: UserRoleService, useValue: { findByUserId: jest.fn() } },
         {
-          provide: PriorityFirestoreRepository,
+          provide: PriorityService,
           useValue: { findAll: jest.fn(), findById: jest.fn() },
         },
         {
-          provide: ClaimCategoryFirestoreRepository,
+          provide: ClaimCategoryService,
           useValue: { findAll: jest.fn(), findById: jest.fn() },
         },
-        { provide: AreaFirestoreRepository, useValue: { findById: jest.fn() } },
-        {
-          provide: ProjectFirestoreRepository,
-          useValue: { findById: jest.fn() },
-        },
-        {
-          provide: ClaimCriticalityFirestoreRepository,
-          useValue: { findById: jest.fn() },
-        },
-        UserRoleFirestoreRepository,
-        ClaimCategoryFirestoreRepository,
+        { provide: AreaService, useValue: { findById: jest.fn() } },
+        { provide: ProjectService, useValue: { findById: jest.fn() } },
+        { provide: ClaimCriticalityService, useValue: { findById: jest.fn() } },
+        { provide: CreateClaim, useValue: { execute: jest.fn() } },
+        { provide: UpdateClaim, useValue: { execute: jest.fn() } },
         SupabaseTestProvider,
       ],
     }).compile();

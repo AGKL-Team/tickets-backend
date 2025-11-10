@@ -1,17 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { RatingCategory } from '../../domain/models/rating-category.entity';
 
 @Injectable()
 export class RatingCategoryService {
   constructor(
     @InjectRepository(RatingCategory)
-    private readonly repo: Repository<RatingCategory>,
+    private readonly repo: MongoRepository<RatingCategory>,
   ) {}
 
   async findById(id: string): Promise<RatingCategory> {
-    const r = await this.repo.findOneBy({ id } as any);
+    const r = await this.repo.findOneBy({ _id: toObjectId(id) });
     if (!r)
       throw new NotFoundException(
         `No se encuentra la categoria de rating con ID ${id}`,
@@ -24,14 +25,14 @@ export class RatingCategoryService {
   }
 
   async save(entity: RatingCategory): Promise<RatingCategory> {
-    return this.repo.save(entity as any);
+    return this.repo.save(entity);
   }
 
   async update(entity: RatingCategory): Promise<RatingCategory> {
-    return this.repo.save(entity as any);
+    return this.repo.save(entity);
   }
 
   async delete(id: string): Promise<void> {
-    await this.repo.delete(id as any);
+    await this.repo.delete(id);
   }
 }

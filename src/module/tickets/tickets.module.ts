@@ -11,6 +11,7 @@ import {
   ClaimStateController,
   CommentController,
   PriorityController,
+  ProjectController,
   RatingController,
   RoleController,
   SubAreaController,
@@ -52,6 +53,7 @@ import { RatingCategory } from './domain/models/rating-category.entity';
 import { Role } from './domain/models/role.entity';
 import { SubArea } from './domain/models/sub-area.entity';
 import { UserArea } from './domain/models/user-area.entity';
+import { UserProject } from './domain/models/user-project.entity';
 import { UserRole } from './domain/models/user-role.entity';
 import {
   AreaService,
@@ -68,6 +70,7 @@ import {
   RoleService,
   SubAreaService,
   UserAreaService,
+  UserProjectService,
   UserRoleService,
 } from './infrastructure/services';
 
@@ -86,6 +89,7 @@ import {
       SubArea,
       ClaimCriticality,
       Project,
+      UserProject,
       ClaimComment,
       RatingCategory,
       ClaimRating,
@@ -110,6 +114,7 @@ import {
     SubAreaService,
     ClaimCriticalityService,
     ProjectService,
+    UserProjectService,
     // Use cases
     // comments
     CreateComment,
@@ -134,7 +139,6 @@ import {
     CreateSubArea,
     UpdateSubArea,
     DeleteSubArea,
-    // new use-cases/controllers for comments, ratings, assignments
     // use-cases
     AssignResolver,
     AssignSubArea,
@@ -189,6 +193,7 @@ import {
     ClaimCancellationController,
     AreaController,
     SubAreaController,
+    ProjectController,
     // new controllers
     CommentController,
     RatingController,

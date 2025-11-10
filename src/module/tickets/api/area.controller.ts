@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -36,12 +37,20 @@ export class AreaController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query('projectId') projectId?: string) {
+    return this.service.findAll(projectId);
+    if (typeof projectId !== 'undefined')
+      return this.service.findAll(projectId);
     return this.service.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(
+    @Param('id') id: string,
+    @Query('projectId') projectId?: string,
+  ) {
+    if (typeof projectId !== 'undefined')
+      return this.service.findById(id, projectId);
     return this.service.findById(id);
   }
 

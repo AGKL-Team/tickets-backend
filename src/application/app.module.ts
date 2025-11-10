@@ -11,17 +11,6 @@ import { TicketModule } from '../module/tickets/tickets.module';
 @Module({
   imports: [
     ConfigurationModule,
-    // Configuración de TypeOrm
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   url: process.env.DATABASE_URL,
-    //   autoLoadEntities: true,
-    //   synchronize: process.env.NODE_ENV !== 'production',
-    //   ssl: {
-    //     rejectUnauthorized: false,
-    //   },
-    //   connectTimeoutMS: 30000,
-    // }),
     // Incluye módulos generales
     AuthModule,
     DatabaseModule,

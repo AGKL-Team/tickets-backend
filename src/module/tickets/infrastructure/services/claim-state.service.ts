@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { ClaimState } from '../../domain/models/claim-state.entity';
 import { ClaimStateRepository } from '../../domain/repositories/claim-state.repository.interface';
 
@@ -8,7 +9,7 @@ import { ClaimStateRepository } from '../../domain/repositories/claim-state.repo
 export class ClaimStateService implements ClaimStateRepository {
   constructor(
     @InjectRepository(ClaimState)
-    private readonly repo: Repository<ClaimState>,
+    private readonly repo: MongoRepository<ClaimState>,
   ) {}
 
   async create(entity: ClaimState): Promise<ClaimState> {
@@ -16,7 +17,7 @@ export class ClaimStateService implements ClaimStateRepository {
   }
 
   async findById(id: string): Promise<ClaimState> {
-    const r = await this.repo.findOneBy({ id } as any);
+    const r = await this.repo.findOneBy({ _id: toObjectId(id) } as any);
     if (!r)
       throw new NotFoundException(`No se encuentra el estado con ID ${id}`);
     return r;

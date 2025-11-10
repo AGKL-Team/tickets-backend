@@ -5,9 +5,9 @@ import { CreateClaimCategoryDto } from '../../../src/module/tickets/application/
 import { UpdateClaimCategoryDto } from '../../../src/module/tickets/application/dto/update-claim-category.dto';
 import { CreateClaimCategory } from '../../../src/module/tickets/application/useCases/create-claim-category.use-case';
 import { UpdateClaimCategory } from '../../../src/module/tickets/application/useCases/update-claim-category.use-case';
-import { ClaimCategoryFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim-category.firestore.repository';
-import { ClaimFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim.firestore.repository';
+// repository providers removed: use service/use-case mocks instead
 import { ClaimCategoryService } from '../../../src/module/tickets/infrastructure/services/claim-category.service';
+import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
 import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
 describe('ClaimCategoryController (integration)', () => {
@@ -20,30 +20,25 @@ describe('ClaimCategoryController (integration)', () => {
     const module = await Test.createTestingModule({
       controllers: [ClaimCategoryController],
       providers: [
-        ClaimCategoryService,
-        CreateClaimCategory,
-        UpdateClaimCategory,
         {
-          provide: ClaimFirestoreRepository,
+          provide: ClaimCategoryService,
           useValue: {
             findAll: jest.fn(),
-            findOne: jest.fn(),
+            findById: jest.fn(),
+            delete: jest.fn(),
+          },
+        },
+        { provide: CreateClaimCategory, useValue: { execute: jest.fn() } },
+        { provide: UpdateClaimCategory, useValue: { execute: jest.fn() } },
+        {
+          provide: ClaimService,
+          useValue: {
+            findAll: jest.fn(),
             findById: jest.fn(),
             save: jest.fn(),
             delete: jest.fn(),
           },
         },
-        {
-          provide: ClaimCategoryFirestoreRepository,
-          useValue: {
-            findAll: jest.fn(),
-            findById: jest.fn(),
-            create: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
-          },
-        },
-        ClaimCategoryFirestoreRepository,
         SupabaseTestProvider,
       ],
     }).compile();

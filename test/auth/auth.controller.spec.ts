@@ -50,6 +50,8 @@ describe('AuthController', () => {
       jest.spyOn(service, 'signIn').mockResolvedValue({
         access_token: '',
         expires_in: 3600,
+        user: { id: 'u1', email: 'test@gmail.com', user_metadata: {} },
+        roles: ['admin'],
       });
 
       const result = await controller.signIn(request);
@@ -57,6 +59,8 @@ describe('AuthController', () => {
       expect(result).toEqual({
         access_token: '',
         expires_in: 3600,
+        user: { id: 'u1', email: 'test@gmail.com', user_metadata: {} },
+        roles: ['admin'],
       });
       expect(service.signIn).toHaveBeenCalledWith(request);
     });

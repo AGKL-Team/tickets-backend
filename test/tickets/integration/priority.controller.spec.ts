@@ -5,9 +5,10 @@ import { CreatePriorityDto } from '../../../src/module/tickets/application/dto/c
 import { UpdatePriorityDto } from '../../../src/module/tickets/application/dto/update-priority.dto';
 import { CreatePriority } from '../../../src/module/tickets/application/useCases/create-priority.use-case';
 import { UpdatePriority } from '../../../src/module/tickets/application/useCases/update-priority.use-case';
-import { ClaimFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim.firestore.repository';
-import { PriorityFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/priority.firestore.repository';
+// repository providers removed: use service/use-case mocks instead
+import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
 import { PriorityService } from '../../../src/module/tickets/infrastructure/services/priority.service';
+import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
 import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
 describe('PriorityController (integration)', () => {
@@ -20,21 +21,19 @@ describe('PriorityController (integration)', () => {
     const module = await Test.createTestingModule({
       controllers: [PriorityController],
       providers: [
-        PriorityService,
-        CreatePriority,
-        UpdatePriority,
         {
-          provide: PriorityFirestoreRepository,
+          provide: PriorityService,
           useValue: {
             findAll: jest.fn(),
             findById: jest.fn(),
-            save: jest.fn(),
             delete: jest.fn(),
-            findByNumber: jest.fn(),
           },
         },
+        { provide: UserRoleService, useValue: { findByUserId: jest.fn() } },
+        { provide: CreatePriority, useValue: { execute: jest.fn() } },
+        { provide: UpdatePriority, useValue: { execute: jest.fn() } },
         {
-          provide: ClaimFirestoreRepository,
+          provide: ClaimService,
           useValue: {
             findAll: jest.fn(),
             findById: jest.fn(),

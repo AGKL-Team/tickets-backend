@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { ClaimCriticality } from '../../domain/models/claim-criticality.entity';
 import { Claim } from '../../domain/models/claim.entity';
 
@@ -8,9 +9,9 @@ import { Claim } from '../../domain/models/claim.entity';
 export class ClaimCriticalityService {
   constructor(
     @InjectRepository(ClaimCriticality)
-    private readonly criticalityRepository: Repository<ClaimCriticality>,
+    private readonly criticalityRepository: MongoRepository<ClaimCriticality>,
     @InjectRepository(Claim)
-    private readonly claimRepo: Repository<Claim>,
+    private readonly claimRepo: MongoRepository<Claim>,
   ) {}
 
   async save(entity: ClaimCriticality): Promise<ClaimCriticality> {
@@ -18,7 +19,9 @@ export class ClaimCriticalityService {
   }
 
   async findById(id: string): Promise<ClaimCriticality> {
-    const c = await this.criticalityRepository.findOneBy({ id } as any);
+    const c = await this.criticalityRepository.findOneBy({
+      _id: toObjectId(id),
+    });
     if (!c)
       throw new NotFoundException(`No se encuentra la criticidad con ID ${id}`);
     return c;

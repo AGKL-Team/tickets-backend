@@ -13,11 +13,10 @@ describe('AreaService', () => {
 
   beforeEach(async () => {
     repo = {
-      findById: jest.fn(),
-      findAll: jest.fn(),
+      findOneBy: jest.fn(),
+      find: jest.fn(),
       save: jest.fn(),
       delete: jest.fn(),
-      findByName: jest.fn(),
     };
 
     claimRepo = {
@@ -41,19 +40,19 @@ describe('AreaService', () => {
 
   it('findById returns area when found', async () => {
     const a = Area.create('test');
-    (repo.findById as jest.Mock).mockResolvedValue(a);
+  (repo.findOneBy as jest.Mock).mockResolvedValue(a);
     const res = await service.findById('id1');
     expect(res).toBe(a);
   });
 
   it('findById throws NotFound when missing', async () => {
-    (repo.findById as jest.Mock).mockRejectedValue(new NotFoundException());
+  (repo.findOneBy as jest.Mock).mockRejectedValue(new NotFoundException());
     await expect(service.findById('no')).rejects.toThrow(NotFoundException);
   });
 
   it('findAll returns list', async () => {
     const list = [Area.create('a1')];
-    (repo.findAll as jest.Mock).mockResolvedValue(list);
+  (repo.find as jest.Mock).mockResolvedValue(list);
     const res = await service.findAll();
     expect(res).toBe(list);
   });
@@ -67,13 +66,13 @@ describe('AreaService', () => {
 
   it('findByName returns area when exists', async () => {
     const a = Area.create('X');
-    (repo.findByName as jest.Mock).mockResolvedValue(a);
+  (repo.findOneBy as jest.Mock).mockResolvedValue(a);
     const res = await service.findByName('X');
     expect(res).toBe(a);
   });
 
   it('findByName throws when not found', async () => {
-    (repo.findByName as jest.Mock).mockRejectedValue(new NotFoundException());
+  (repo.findOneBy as jest.Mock).mockRejectedValue(new NotFoundException());
     await expect(service.findByName('no')).rejects.toThrow(NotFoundException);
   });
 

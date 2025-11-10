@@ -20,9 +20,16 @@ describe('AreaController (integration)', () => {
     const module = await Test.createTestingModule({
       controllers: [AreaController],
       providers: [
-        AreaService,
-        CreateArea,
-        UpdateArea,
+        {
+          provide: AreaService,
+          useValue: {
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            delete: jest.fn(),
+          },
+        },
+        { provide: CreateArea, useValue: { execute: jest.fn() } },
+        { provide: UpdateArea, useValue: { execute: jest.fn() } },
         { provide: UserRoleService, useValue: { findByUserId: jest.fn() } },
         {
           provide: ClaimService,

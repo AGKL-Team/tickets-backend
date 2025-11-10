@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { toObjectId } from '../../../core/database/mongo.utils';
 import { UserArea } from '../../domain/models/user-area.entity';
 // There is no dedicated UserAreaRepository interface; keep service as-is
 
@@ -8,7 +9,7 @@ import { UserArea } from '../../domain/models/user-area.entity';
 export class UserAreaService {
   constructor(
     @InjectRepository(UserArea)
-    private readonly repo: Repository<UserArea>,
+    private readonly repo: MongoRepository<UserArea>,
   ) {}
 
   async save(entity: UserArea): Promise<UserArea> {
@@ -24,7 +25,7 @@ export class UserAreaService {
   }
 
   async findOne(id: string): Promise<UserArea> {
-    const r = await this.repo.findOneBy({ id } as any);
+    const r = await this.repo.findOneBy({ id: toObjectId(id) } as any);
     if (!r)
       throw new NotFoundException(
         `No se encuentra la asociación user-area con ID ${id}`,
