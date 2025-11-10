@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserArea } from '../../domain/models/user-area.entity';
+// There is no dedicated UserAreaRepository interface; keep service as-is
 
 @Injectable()
 export class UserAreaService {
@@ -11,33 +12,27 @@ export class UserAreaService {
   ) {}
 
   async save(entity: UserArea): Promise<UserArea> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async findByUserId(userId: string): Promise<UserArea[]> {
-    return this.repo.find({ where: { userId }, relations: { area: true } });
+    return this.repo.find({ where: { userId } as any } as any);
   }
 
   async findByAreaId(areaId: string): Promise<UserArea[]> {
-    return this.repo.find({
-      where: { area: { id: areaId } },
-      relations: { area: true },
-    });
+    return this.repo.find({ where: { 'area.id': areaId } as any } as any);
   }
 
   async findOne(id: string): Promise<UserArea> {
-    const u = await this.repo.findOne({
-      where: { id },
-      relations: { area: true },
-    });
-    if (!u)
+    const r = await this.repo.findOneBy({ id } as any);
+    if (!r)
       throw new NotFoundException(
-        `No se encuentra la asignación usuario-área con ID ${id}`,
+        `No se encuentra la asociación user-area con ID ${id}`,
       );
-    return u;
+    return r;
   }
 
   async delete(id: string) {
-    await this.repo.delete(id);
+    await this.repo.delete(id as any);
   }
 }

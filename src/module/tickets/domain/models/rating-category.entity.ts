@@ -1,18 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { ClaimRating } from './claim-rating.entity';
 
-@Entity({ name: 'rating_categories' })
+@Entity('rating_categories')
 export class RatingCategory {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
-  @Column({ unique: true })
+  @Column()
   name!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => ClaimRating, (r) => r.category)
+  @Column({ nullable: true })
   ratings?: ClaimRating[];
 
   changeName(name: string) {

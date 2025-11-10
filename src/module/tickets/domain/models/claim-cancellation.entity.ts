@@ -1,18 +1,18 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'claim_cancellations' })
+@Entity('claim_cancellations')
 export class ClaimCancellation {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
   @Column()
   name!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description?: string;
 
-  @OneToOne(() => Claim, (claim) => claim.cancellation)
+  @Column({ nullable: true })
   claim?: Claim;
 
   changeName(name: string) {

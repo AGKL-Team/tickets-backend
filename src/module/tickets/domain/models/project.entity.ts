@@ -1,22 +1,22 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Area } from './area.entity';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'projects' })
+@Entity('projects')
 export class Project {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
   @Column()
   name!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => Area, (a) => a.project)
+  @Column({ nullable: true })
   areas?: Area[];
 
-  @OneToMany(() => Claim, (c) => c.project)
+  @Column({ nullable: true })
   claims?: Claim[];
 
   changeName(name: string) {

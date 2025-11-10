@@ -1,7 +1,7 @@
-import { FirebaseService } from '../../../src/module/core/database/services/firebase.service';
+import { SupabaseService } from '../../../src/module/core/database/services/supabase.service';
 
-export const FirebaseTestProvider = {
-  provide: FirebaseService,
+export const SupabaseTestProvider = {
+  provide: SupabaseService,
   useValue: {
     getClient: jest.fn().mockReturnValue({
       from: jest.fn().mockReturnThis(),
@@ -9,6 +9,6 @@ export const FirebaseTestProvider = {
       select: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
     }),
-    handleError: FirebaseService.prototype.handleError,
+    handleError: jest.fn(),
   },
 };

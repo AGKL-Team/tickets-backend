@@ -11,10 +11,10 @@ export class RatingCategoryService {
   ) {}
 
   async findById(id: string): Promise<RatingCategory> {
-    const r = await this.repo.findOne({ where: { id } });
+    const r = await this.repo.findOneBy({ id } as any);
     if (!r)
       throw new NotFoundException(
-        `No se encuentra la categoría de rating con ID ${id}`,
+        `No se encuentra la categoria de rating con ID ${id}`,
       );
     return r;
   }
@@ -24,14 +24,14 @@ export class RatingCategoryService {
   }
 
   async save(entity: RatingCategory): Promise<RatingCategory> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async update(entity: RatingCategory): Promise<RatingCategory> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async delete(id: string): Promise<void> {
-    await this.repo.delete(id);
+    await this.repo.delete(id as any);
   }
 }

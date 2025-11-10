@@ -1,31 +1,38 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Claim } from '../../../src/module/tickets/domain/models';
 import { Area } from '../../../src/module/tickets/domain/models/area.entity';
+import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
 import { AreaService } from '../../../src/module/tickets/infrastructure/services/area.service';
+import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
 describe('AreaService', () => {
   let service: AreaService;
-  let repo: Partial<Repository<Area>>;
-  let claimRepo: Partial<Repository<Claim>>;
+  let repo: any;
+  let claimRepo: any;
 
   beforeEach(async () => {
     repo = {
-      findOne: jest.fn(),
+      findById: jest.fn(),
+      findAll: jest.fn(),
+      save: jest.fn(),
+      delete: jest.fn(),
+      findByName: jest.fn(),
+    };
+
+    claimRepo = {
+      findOneBy: jest.fn(),
       find: jest.fn(),
       save: jest.fn(),
       delete: jest.fn(),
-    } as any;
-
-    claimRepo = { findOne: jest.fn() } as any;
+    };
 
     const module = await Test.createTestingModule({
       providers: [
         AreaService,
         { provide: getRepositoryToken(Area), useValue: repo },
         { provide: getRepositoryToken(Claim), useValue: claimRepo },
+        SupabaseTestProvider,
       ],
     }).compile();
 
@@ -34,19 +41,19 @@ describe('AreaService', () => {
 
   it('findById returns area when found', async () => {
     const a = Area.create('test');
-    (repo.findOne as jest.Mock).mockResolvedValue(a);
+    (repo.findById as jest.Mock).mockResolvedValue(a);
     const res = await service.findById('id1');
     expect(res).toBe(a);
   });
 
   it('findById throws NotFound when missing', async () => {
-    (repo.findOne as jest.Mock).mockResolvedValue(null);
+    (repo.findById as jest.Mock).mockRejectedValue(new NotFoundException());
     await expect(service.findById('no')).rejects.toThrow(NotFoundException);
   });
 
   it('findAll returns list', async () => {
     const list = [Area.create('a1')];
-    (repo.find as jest.Mock).mockResolvedValue(list);
+    (repo.findAll as jest.Mock).mockResolvedValue(list);
     const res = await service.findAll();
     expect(res).toBe(list);
   });
@@ -60,20 +67,20 @@ describe('AreaService', () => {
 
   it('findByName returns area when exists', async () => {
     const a = Area.create('X');
-    (repo.findOne as jest.Mock).mockResolvedValue(a);
+    (repo.findByName as jest.Mock).mockResolvedValue(a);
     const res = await service.findByName('X');
     expect(res).toBe(a);
   });
 
   it('findByName throws when not found', async () => {
-    (repo.findOne as jest.Mock).mockResolvedValue(null);
+    (repo.findByName as jest.Mock).mockRejectedValue(new NotFoundException());
     await expect(service.findByName('no')).rejects.toThrow(NotFoundException);
   });
 
   it('hasClaimsAssociated queries claim repository', async () => {
-    (claimRepo.findOne as jest.Mock).mockResolvedValue(null);
+    (claimRepo.findOneBy as jest.Mock).mockResolvedValue(undefined);
     const res = await service.hasClaimsAssociated('id');
-    expect(claimRepo.findOne).toHaveBeenCalled();
-    expect(res).toBeNull();
+    expect(claimRepo.findOneBy).toHaveBeenCalledWith({ 'area.id': 'id' });
+    expect(res).toBe(false);
   });
 });

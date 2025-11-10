@@ -12,14 +12,14 @@ export class ClaimStateService implements ClaimStateRepository {
   ) {}
 
   async create(entity: ClaimState): Promise<ClaimState> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async findById(id: string): Promise<ClaimState> {
-    const s = await this.repo.findOne({ where: { id } });
-    if (!s)
-      throw new NotFoundException(`No se encuentra el estado con el ID ${id}`);
-    return s;
+    const r = await this.repo.findOneBy({ id } as any);
+    if (!r)
+      throw new NotFoundException(`No se encuentra el estado con ID ${id}`);
+    return r;
   }
 
   async findAll(): Promise<ClaimState[]> {
@@ -27,10 +27,10 @@ export class ClaimStateService implements ClaimStateRepository {
   }
 
   async update(entity: ClaimState): Promise<ClaimState> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async delete(id: string): Promise<void> {
-    await this.repo.delete(id);
+    await this.repo.delete(id as any);
   }
 }

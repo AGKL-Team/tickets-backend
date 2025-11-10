@@ -1,34 +1,25 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Claim } from './claim.entity';
 import { RatingCategory } from './rating-category.entity';
 
-@Entity({ name: 'claim_ratings' })
+@Entity('claim_ratings')
 export class ClaimRating {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
-  @Column('int')
+  @Column()
   score!: number;
 
-  @CreateDateColumn()
+  @Column({ nullable: true })
   date!: Date;
 
-  @ManyToOne(() => RatingCategory, (c) => c.ratings, { eager: true })
+  @Column({ nullable: true })
   category!: RatingCategory;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   feedback?: string;
 
-  @OneToOne(() => Claim, (claim) => claim.rating)
-  @JoinColumn()
+  @Column({ nullable: true })
   claim!: Claim;
 
   static create(

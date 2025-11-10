@@ -12,25 +12,18 @@ export class UserRoleService implements UserRoleRepository {
   ) {}
 
   async create(entity: UserRole): Promise<UserRole> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async findById(id: string): Promise<UserRole> {
-    const ur = await this.repo.findOne({ where: { id } });
-    if (!ur)
-      throw new NotFoundException(
-        `No se encuentra el rol de usuario con el ID ${id}`,
-      );
-    return ur;
+    const r = await this.repo.findOneBy({ id } as any);
+    if (!r)
+      throw new NotFoundException(`No se encuentra userRole con ID ${id}`);
+    return r;
   }
 
   async findByUserId(userId: string): Promise<UserRole[]> {
-    return this.repo.find({
-      where: { userId },
-      relations: {
-        role: true,
-      },
-    });
+    return this.repo.find({ where: { userId } as any } as any);
   }
 
   async findAll(): Promise<UserRole[]> {
@@ -38,10 +31,10 @@ export class UserRoleService implements UserRoleRepository {
   }
 
   async update(entity: UserRole): Promise<UserRole> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async delete(id: string): Promise<void> {
-    await this.repo.delete(id);
+    await this.repo.delete(id as any);
   }
 }

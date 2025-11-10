@@ -1,16 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { PriorityController } from '../../../src/module/tickets/api/priority.controller';
 import { CreatePriorityDto } from '../../../src/module/tickets/application/dto/create-priority.dto';
 import { UpdatePriorityDto } from '../../../src/module/tickets/application/dto/update-priority.dto';
 import { CreatePriority } from '../../../src/module/tickets/application/useCases/create-priority.use-case';
 import { UpdatePriority } from '../../../src/module/tickets/application/useCases/update-priority.use-case';
-import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
-import { Priority } from '../../../src/module/tickets/domain/models/priority.entity';
+import { ClaimFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim.firestore.repository';
+import { PriorityFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/priority.firestore.repository';
 import { PriorityService } from '../../../src/module/tickets/infrastructure/services/priority.service';
-import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
+import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
 describe('PriorityController (integration)', () => {
   let controller: PriorityController;
@@ -26,14 +24,25 @@ describe('PriorityController (integration)', () => {
         CreatePriority,
         UpdatePriority,
         {
-          provide: getRepositoryToken(Priority),
-          useClass: Repository,
+          provide: PriorityFirestoreRepository,
+          useValue: {
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+            findByNumber: jest.fn(),
+          },
         },
         {
-          provide: getRepositoryToken(Claim),
-          useClass: Repository,
+          provide: ClaimFirestoreRepository,
+          useValue: {
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+          },
         },
-        FirebaseTestProvider,
+        SupabaseTestProvider,
       ],
     }).compile();
 

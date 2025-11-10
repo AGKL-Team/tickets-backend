@@ -1,27 +1,21 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'claim_comments' })
+@Entity('claim_comments')
 export class ClaimComment {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
-  @Column('text')
+  @Column()
   content!: string;
 
   @Column()
   authorId!: string;
 
-  @CreateDateColumn()
+  @Column({ nullable: true })
   date!: Date;
 
-  @ManyToOne(() => Claim, (c) => c.comments)
+  @Column({ nullable: true })
   claim!: Claim;
 
   static create(content: string, authorId: string, claim: Claim) {

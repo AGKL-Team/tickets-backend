@@ -1,17 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { AreaController } from '../../../src/module/tickets/api/area.controller';
 import { CreateAreaDto } from '../../../src/module/tickets/application/dto/create-area.dto';
 import { UpdateAreaDto } from '../../../src/module/tickets/application/dto/update-area.dto';
 import { CreateArea } from '../../../src/module/tickets/application/useCases/create-area.use-case';
 import { UpdateArea } from '../../../src/module/tickets/application/useCases/update-area.use-case';
-import { Area } from '../../../src/module/tickets/domain/models/area.entity';
-import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
+import { ClaimService } from '../../../src/module/tickets/infrastructure/services';
 import { AreaService } from '../../../src/module/tickets/infrastructure/services/area.service';
 import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
-import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
+import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
 describe('AreaController (integration)', () => {
   let controller: AreaController;
@@ -28,14 +25,15 @@ describe('AreaController (integration)', () => {
         UpdateArea,
         { provide: UserRoleService, useValue: { findByUserId: jest.fn() } },
         {
-          provide: getRepositoryToken(Claim),
-          useClass: Repository,
+          provide: ClaimService,
+          useValue: {
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+          },
         },
-        {
-          provide: getRepositoryToken(Area),
-          useClass: Repository,
-        },
-        FirebaseTestProvider,
+        SupabaseTestProvider,
       ],
     }).compile();
 

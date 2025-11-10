@@ -12,13 +12,12 @@ export class RoleService implements RoleRepository {
   ) {}
 
   async create(entity: Role): Promise<Role> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async findById(id: string): Promise<Role> {
-    const r = await this.repo.findOne({ where: { id } });
-    if (!r)
-      throw new NotFoundException(`No se encuentra el rol con el ID ${id}`);
+    const r = await this.repo.findOneBy({ id } as any);
+    if (!r) throw new NotFoundException(`No se encuentra el rol con ID ${id}`);
     return r;
   }
 
@@ -27,10 +26,10 @@ export class RoleService implements RoleRepository {
   }
 
   async update(entity: Role): Promise<Role> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async delete(id: string): Promise<void> {
-    await this.repo.delete(id);
+    await this.repo.delete(id as any);
   }
 }

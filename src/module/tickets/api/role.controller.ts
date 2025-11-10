@@ -8,11 +8,11 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { FirebaseAuthGuard } from '../../core/auth/infrastructure/guard/firebase-auth.guard';
 import { Role } from '../domain/models/role.entity';
 import { RoleService } from '../infrastructure/services/role.service';
+import { SupabaseAuthGuard } from '../../core/auth/infrastructure/guard/supabase-auth.guard';
 
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(SupabaseAuthGuard)
 @Controller('roles')
 export class RoleController {
   constructor(private readonly service: RoleService) {}

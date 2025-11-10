@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Claim } from '../../domain/models';
+import { Claim } from '../../domain/models/claim.entity';
 import { Priority } from '../../domain/models/priority.entity';
 import { PriorityRepository } from '../../domain/repositories/priority.repository.interface';
 
@@ -15,18 +15,14 @@ export class PriorityService implements PriorityRepository {
   ) {}
 
   async save(entity: Priority): Promise<Priority> {
-    return this.priorityRepository.save(entity);
+    return this.priorityRepository.save(entity as any);
   }
 
   async findById(id: string): Promise<Priority> {
-    const priority = await this.priorityRepository.findOne({ where: { id } });
-
-    if (!priority)
-      throw new NotFoundException(
-        `No se encuentra la prioridad con el ID ${id}`,
-      );
-
-    return priority;
+    const p = await this.priorityRepository.findOneBy({ id } as any);
+    if (!p)
+      throw new NotFoundException(`No se encuentra la prioridad con ID ${id}`);
+    return p;
   }
 
   async findAll(): Promise<Priority[]> {
@@ -34,18 +30,22 @@ export class PriorityService implements PriorityRepository {
   }
 
   async update(entity: Priority): Promise<Priority> {
-    return this.priorityRepository.save(entity);
+    return this.priorityRepository.save(entity as any);
   }
 
   async delete(id: string): Promise<void> {
-    await this.priorityRepository.delete(id);
+    await this.priorityRepository.delete(id as any);
   }
 
-  async findByNumber(number: number) {
-    return this.priorityRepository.findOne({ where: { number } });
+  async findByNumber(number: number): Promise<Priority | null> {
+    const p = await this.priorityRepository.findOneBy({ number } as any);
+    return p ?? null;
   }
 
   async hasClaimsAssociated(id: string) {
-    return await this.claimRepository.findOne({ where: { priority: { id } } });
+    const c = await this.claimRepository.findOneBy({
+      'priority.id': id,
+    } as any);
+    return !!c;
   }
 }

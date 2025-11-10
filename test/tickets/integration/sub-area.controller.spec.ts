@@ -1,18 +1,16 @@
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { SubAreaController } from '../../../src/module/tickets/api/sub-area.controller';
 import { CreateSubAreaDto } from '../../../src/module/tickets/application/dto/create-sub-area.dto';
 import { UpdateSubAreaDto } from '../../../src/module/tickets/application/dto/update-sub-area.dto';
 import { CreateSubArea } from '../../../src/module/tickets/application/useCases/create-sub-area.use-case';
 import { UpdateSubArea } from '../../../src/module/tickets/application/useCases/update-sub-area.use-case';
-import { Area } from '../../../src/module/tickets/domain/models/area.entity';
-import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
-import { SubArea } from '../../../src/module/tickets/domain/models/sub-area.entity';
+import { AreaFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/area.firestore.repository';
+import { ClaimFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim.firestore.repository';
+import { SubAreaFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/sub-area.firestore.repository';
 import { AreaService } from '../../../src/module/tickets/infrastructure/services/area.service';
 import { SubAreaService } from '../../../src/module/tickets/infrastructure/services/sub-area.service';
 import { UserRoleService } from '../../../src/module/tickets/infrastructure/services/user-role.service';
-import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
+import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
 describe('SubAreaController (integration)', () => {
   let controller: SubAreaController;
@@ -31,18 +29,30 @@ describe('SubAreaController (integration)', () => {
         AreaService,
         { provide: UserRoleService, useValue: { findByUserId: jest.fn() } },
         {
-          provide: getRepositoryToken(Claim),
-          useClass: Repository,
+          provide: ClaimFirestoreRepository,
+          useValue: {
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+          },
         },
         {
-          provide: getRepositoryToken(SubArea),
-          useClass: Repository,
+          provide: SubAreaFirestoreRepository,
+          useValue: {
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            save: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+            findByName: jest.fn(),
+          },
         },
         {
-          provide: getRepositoryToken(Area),
-          useClass: Repository,
+          provide: AreaFirestoreRepository,
+          useValue: { findById: jest.fn(), findAll: jest.fn() },
         },
-        FirebaseTestProvider,
+        SupabaseTestProvider,
       ],
     }).compile();
 

@@ -38,20 +38,21 @@ import { UpdateComment } from './application/useCases/update-comment.use-case';
 import { UpdatePriority } from './application/useCases/update-priority.use-case';
 import { UpdateRating } from './application/useCases/update-rating.use-case';
 import { UpdateSubArea } from './application/useCases/update-sub-area.use-case';
-import {
-  Area,
-  Claim,
-  ClaimCancellation,
-  ClaimCategory,
-  ClaimCriticality,
-  ClaimState,
-  Priority,
-  Project,
-  Role,
-  SubArea,
-  UserArea,
-  UserRole,
-} from './domain/models';
+import { Area } from './domain/models/area.entity';
+import { ClaimCancellation } from './domain/models/claim-cancellation.entity';
+import { ClaimCategory } from './domain/models/claim-category.entity';
+import { ClaimComment } from './domain/models/claim-comment.entity';
+import { ClaimCriticality } from './domain/models/claim-criticality.entity';
+import { ClaimRating } from './domain/models/claim-rating.entity';
+import { ClaimState } from './domain/models/claim-state.entity';
+import { Claim } from './domain/models/claim.entity';
+import { Priority } from './domain/models/priority.entity';
+import { Project } from './domain/models/project.entity';
+import { RatingCategory } from './domain/models/rating-category.entity';
+import { Role } from './domain/models/role.entity';
+import { SubArea } from './domain/models/sub-area.entity';
+import { UserArea } from './domain/models/user-area.entity';
+import { UserRole } from './domain/models/user-role.entity';
 import {
   AreaService,
   ClaimCancellationService,
@@ -63,6 +64,7 @@ import {
   ClaimStateService,
   PriorityService,
   ProjectService,
+  RatingCategoryService,
   RoleService,
   SubAreaService,
   UserAreaService,
@@ -79,18 +81,20 @@ import {
       Priority,
       Role,
       UserRole,
-      // user-area mapping
-      // keep after UserRole
       UserArea,
       Area,
       SubArea,
       ClaimCriticality,
       Project,
+      ClaimComment,
+      RatingCategory,
+      ClaimRating,
     ]),
     DatabaseModule,
     AuthModule,
   ],
   providers: [
+    // services
     ClaimService,
     ClaimCancellationService,
     ClaimCategoryService,
@@ -98,9 +102,7 @@ import {
     ClaimRatingService,
     ClaimStateService,
     PriorityService,
-    // new services
-    // ClaimCriticalityService and ProjectService will be used by create/update use-cases
-    // ...provided below
+    RatingCategoryService,
     RoleService,
     UserRoleService,
     UserAreaService,

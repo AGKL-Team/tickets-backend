@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { User } from '@supabase/supabase-js';
 import { UserFromRequest } from '../../core/auth/infrastructure/decorators/user.decorator';
+
+import { Roles, RolesGuard } from '../../core/auth/infrastructure/guard';
 import { SupabaseAuthGuard } from '../../core/auth/infrastructure/guard/supabase-auth.guard';
 import { CreateRatingDto } from '../application/dto/create-rating.dto';
 import { UpdateRatingDto } from '../application/dto/update-rating.dto';
@@ -16,7 +18,7 @@ import { CreateRating } from '../application/useCases/create-rating.use-case';
 import { DeleteRating } from '../application/useCases/delete-rating.use-case';
 import { UpdateRating } from '../application/useCases/update-rating.use-case';
 
-@UseGuards(SupabaseAuthGuard)
+@UseGuards(SupabaseAuthGuard, RolesGuard)
 @Controller('claims')
 export class RatingController {
   constructor(
@@ -26,6 +28,7 @@ export class RatingController {
   ) {}
 
   @Post(':id/rating')
+  @Roles('client')
   async create(@Param('id') claimId: string, @Body() body: CreateRatingDto) {
     return this.createRating.execute(
       claimId,
@@ -36,6 +39,7 @@ export class RatingController {
   }
 
   @Put('ratings/:id')
+  @Roles('client')
   async update(
     @Param('id') ratingId: string,
     @Body() body: UpdateRatingDto,
@@ -50,6 +54,7 @@ export class RatingController {
   }
 
   @Delete('ratings/:id')
+  @Roles('client')
   async remove(@Param('id') ratingId: string, @UserFromRequest() user: User) {
     return this.deleteRating.execute(ratingId, user.id);
   }

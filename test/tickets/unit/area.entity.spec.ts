@@ -20,7 +20,7 @@ describe('Area entity', () => {
     const s1 = SubArea.create('cobros', 'desc', a);
     a.addSubArea(s1);
     expect(a.subAreas).toBeDefined();
-    expect(a.subAreas!.length).toBe(1);
+    expect(a.subAreas.length).toBe(1);
 
     // adding same name should throw
     const s2 = SubArea.create('cobros', 'otra', a);

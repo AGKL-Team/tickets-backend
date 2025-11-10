@@ -1,36 +1,27 @@
 import { BadRequestException } from '@nestjs/common';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Claim } from './claim.entity';
 import { Project } from './project.entity';
 import { SubArea } from './sub-area.entity';
 
-@Entity({ name: 'areas' })
+@Entity('areas')
 export class Area {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
   @Column()
   name!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => Claim, (claim) => claim.area)
+  @Column({ nullable: true })
   claims?: Claim[];
 
-  @OneToMany(() => SubArea, (subarea) => subarea.area)
+  @Column({ nullable: true })
   subAreas: SubArea[] = [];
 
-  @ManyToOne(() => Project, (project) => project.areas, {
-    nullable: true,
-    eager: true,
-  })
+  @Column({ nullable: true })
   project?: Project;
 
   changeName(name: string) {

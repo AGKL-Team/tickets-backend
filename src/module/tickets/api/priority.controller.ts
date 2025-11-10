@@ -8,15 +8,15 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { Roles } from '../../core/auth/infrastructure/guard';
-import { FirebaseAuthGuard } from '../../core/auth/infrastructure/guard/firebase-auth.guard';
+import { Roles, RolesGuard } from '../../core/auth/infrastructure/guard';
+import { SupabaseAuthGuard } from '../../core/auth/infrastructure/guard/supabase-auth.guard';
 import { CreatePriorityDto } from '../application/dto/create-priority.dto';
 import { UpdatePriorityDto } from '../application/dto/update-priority.dto';
 import { CreatePriority } from '../application/useCases/create-priority.use-case';
 import { UpdatePriority } from '../application/useCases/update-priority.use-case';
 import { PriorityService } from '../infrastructure/services/priority.service';
 
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(SupabaseAuthGuard, RolesGuard)
 @Controller('priorities')
 export class PriorityController {
   constructor(

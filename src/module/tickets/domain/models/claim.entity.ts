@@ -1,15 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Area } from './area.entity';
 import { ClaimCancellation } from './claim-cancellation.entity';
 import { ClaimCategory } from './claim-category.entity';
@@ -22,88 +12,66 @@ import { Priority } from './priority.entity';
 import { Project } from './project.entity';
 import { SubArea } from './sub-area.entity';
 
-@Entity({ name: 'claims' })
+@Entity('claims')
 export class Claim {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
   @Column()
   issue!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description?: string;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ nullable: true })
   date?: Date;
 
-  @ManyToOne(() => ClaimState, (state) => state.claims, { eager: true })
+  @Column({ nullable: true })
   state!: ClaimState;
 
-  @ManyToOne(() => Priority, (priority) => priority.claims, { eager: true })
+  @Column({ nullable: true })
   priority!: Priority;
 
-  @ManyToOne(() => ClaimCategory, (category) => category.claims, {
-    eager: true,
-  })
+  @Column({ nullable: true })
   category!: ClaimCategory;
 
-  @ManyToOne(() => Area, (area) => area.claims, { eager: true, nullable: true })
+  @Column({ nullable: true })
   area?: Area;
 
-  @ManyToOne(() => SubArea, (subArea) => subArea.claims, {
-    eager: true,
-    nullable: true,
-  })
+  @Column({ nullable: true })
   subArea?: SubArea;
 
-  @ManyToOne(() => Project, (project) => project.claims, {
-    eager: true,
-    nullable: true,
-  })
+  @Column({ nullable: true })
   project?: Project;
 
-  @ManyToOne(() => ClaimCriticality, (c) => c.claims, {
-    eager: true,
-    nullable: true,
-  })
+  @Column({ nullable: true })
   criticality?: ClaimCriticality;
 
-  @OneToMany(() => ClaimHistory, (h) => h.claim, {
-    cascade: true,
-  })
+  @Column({ nullable: true })
   history!: ClaimHistory[];
 
-  @OneToMany(() => ClaimComment, (c) => c.claim, { cascade: true })
+  @Column({ nullable: true })
   comments?: ClaimComment[];
 
-  @OneToOne(() => ClaimRating, (r) => r.claim, {
-    cascade: true,
-    eager: true,
-    nullable: true,
-  })
+  @Column({ nullable: true })
   rating?: ClaimRating | null;
 
-  @Column('varchar')
+  @Column()
   number!: string;
 
-  @Column('uuid')
+  @Column()
   clientId!: string;
 
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ nullable: true })
   claimResolverId!: string | null;
 
-  @OneToOne(() => ClaimCancellation, (c) => c.claim, {
-    cascade: true,
-    nullable: true,
-    eager: true,
-  })
-  @JoinColumn()
+  @Column({ nullable: true })
   cancellation?: ClaimCancellation | null;
 
-  @CreateDateColumn()
+  @Column({ nullable: true })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @Column({ nullable: true })
   updatedAt!: Date;
 
   changeIssue(issue: string, operatorId?: string) {

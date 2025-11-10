@@ -12,14 +12,14 @@ export class ClaimCancellationService implements ClaimCancellationRepository {
   ) {}
 
   async create(entity: ClaimCancellation): Promise<ClaimCancellation> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async findById(id: string): Promise<ClaimCancellation> {
-    const c = await this.repo.findOne({ where: { id } });
+    const c = await this.repo.findOneBy({ id } as any);
     if (!c)
       throw new NotFoundException(
-        `No se encuentra la cancelación con el ID ${id}`,
+        `No se encuentra la cancelación con ID ${id}`,
       );
     return c;
   }
@@ -29,10 +29,10 @@ export class ClaimCancellationService implements ClaimCancellationRepository {
   }
 
   async update(entity: ClaimCancellation): Promise<ClaimCancellation> {
-    return this.repo.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async delete(id: string): Promise<void> {
-    await this.repo.delete(id);
+    await this.repo.delete(id as any);
   }
 }

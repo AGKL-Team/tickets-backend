@@ -1,15 +1,15 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Area } from './area.entity';
 
-@Entity({ name: 'user_areas' })
+@Entity('user_areas')
 export class UserArea {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
   @Column()
   userId!: string;
 
-  @ManyToOne(() => Area, (a) => a.id, { eager: true })
+  @Column({ nullable: true })
   area!: Area;
 
   static create(userId: string, area: Area) {

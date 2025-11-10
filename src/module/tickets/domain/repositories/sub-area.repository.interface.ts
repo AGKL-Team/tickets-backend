@@ -6,5 +6,5 @@ export interface SubAreaRepository {
   save(subArea: SubArea): Promise<SubArea>;
   update(subArea: SubArea): Promise<SubArea>;
   delete(subAreaId: string): Promise<boolean>;
-  findByName(name: string): Promise<SubArea>;
+  findByName(name: string): Promise<SubArea | null>;
 }

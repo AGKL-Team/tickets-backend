@@ -1,15 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { UserRole } from './user-role.entity';
 
-@Entity({ name: 'roles' })
+@Entity('roles')
 export class Role {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
-  @Column({ unique: true })
+  @Column()
   name!: string;
 
-  @OneToMany(() => UserRole, (ur) => ur.role)
+  @Column({ nullable: true })
   userRoles?: UserRole[];
 
   changeName(name: string) {

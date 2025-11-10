@@ -1,18 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'priorities' })
+@Entity('priorities')
 export class Priority {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
-  @Column('int')
+  @Column()
   number!: number;
 
   @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => Claim, (claim) => claim.priority)
+  @Column({ nullable: true })
   claims?: Claim[];
 
   changeNumber(number: number) {

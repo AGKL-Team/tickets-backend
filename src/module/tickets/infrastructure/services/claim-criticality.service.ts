@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Claim } from '../../domain/models';
 import { ClaimCriticality } from '../../domain/models/claim-criticality.entity';
+import { Claim } from '../../domain/models/claim.entity';
 
 @Injectable()
 export class ClaimCriticalityService {
@@ -10,22 +10,18 @@ export class ClaimCriticalityService {
     @InjectRepository(ClaimCriticality)
     private readonly criticalityRepository: Repository<ClaimCriticality>,
     @InjectRepository(Claim)
-    private readonly claimRepository: Repository<Claim>,
+    private readonly claimRepo: Repository<Claim>,
   ) {}
 
   async save(entity: ClaimCriticality): Promise<ClaimCriticality> {
-    return this.criticalityRepository.save(entity);
+    return this.criticalityRepository.save(entity as any);
   }
 
   async findById(id: string): Promise<ClaimCriticality> {
-    const crit = await this.criticalityRepository.findOne({ where: { id } });
-
-    if (!crit)
-      throw new NotFoundException(
-        `No se encuentra la criticidad con el ID ${id}`,
-      );
-
-    return crit;
+    const c = await this.criticalityRepository.findOneBy({ id } as any);
+    if (!c)
+      throw new NotFoundException(`No se encuentra la criticidad con ID ${id}`);
+    return c;
   }
 
   async findAll(): Promise<ClaimCriticality[]> {
@@ -33,16 +29,15 @@ export class ClaimCriticalityService {
   }
 
   async update(entity: ClaimCriticality): Promise<ClaimCriticality> {
-    return this.criticalityRepository.save(entity);
+    return this.criticalityRepository.save(entity as any);
   }
 
   async delete(id: string): Promise<void> {
-    await this.criticalityRepository.delete(id);
+    await this.criticalityRepository.delete(id as any);
   }
 
   async hasClaimsAssociated(id: string) {
-    return await this.claimRepository.findOne({
-      where: { criticality: { id } },
-    });
+    const c = await this.claimRepo.findOneBy({ 'criticality.id': id } as any);
+    return !!c;
   }
 }

@@ -10,18 +10,15 @@ import {
 } from '@nestjs/common';
 import { User } from '@supabase/supabase-js';
 import { UserFromRequest } from '../../core/auth/infrastructure/decorators/user.decorator';
-import {
-  FirebaseAuthGuard,
-  Roles,
-  RolesGuard,
-} from '../../core/auth/infrastructure/guard';
+import { Roles, RolesGuard } from '../../core/auth/infrastructure/guard';
+import { SupabaseAuthGuard } from '../../core/auth/infrastructure/guard/supabase-auth.guard';
 import { CreateClaimDto } from '../application/dto/create-claim.dto';
 import { UpdateClaimDto } from '../application/dto/update-claim.dto';
 import { CreateClaim } from '../application/useCases/create-claim.use-case';
 import { UpdateClaim } from '../application/useCases/update-claim.use-case';
 import { ClaimService } from '../infrastructure/services/claim.service';
 
-@UseGuards(FirebaseAuthGuard, RolesGuard)
+@UseGuards(SupabaseAuthGuard, RolesGuard)
 @Controller('claims')
 export class ClaimController {
   constructor(

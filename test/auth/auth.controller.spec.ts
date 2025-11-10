@@ -6,7 +6,7 @@ import { SignUpRequest } from '../../src/module/core/auth/application/requests/s
 import { AuthService } from '../../src/module/core/auth/infrastructure/services/auth.service';
 import { AuthController } from '../../src/module/core/auth/presentation/api/auth.controller';
 import { ConfigTestProvider } from '../shared/providers/config-test.provider';
-import { FirebaseTestProvider } from '../shared/providers/firebase-config-test.provider';
+import { SupabaseTestProvider } from '../shared/providers/supabase-config-test.provider';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -25,7 +25,7 @@ describe('AuthController', () => {
             updateHeight: jest.fn(),
           },
         },
-        FirebaseTestProvider,
+        SupabaseTestProvider,
         ConfigTestProvider,
       ],
     }).compile();

@@ -1,19 +1,15 @@
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { ClaimController } from '../../../src/module/tickets/api/claim.controller';
 import { CreateClaimDto } from '../../../src/module/tickets/application/dto/create-claim.dto';
 import { CreateClaim } from '../../../src/module/tickets/application/useCases/create-claim.use-case';
 import { UpdateClaim } from '../../../src/module/tickets/application/useCases/update-claim.use-case';
-import {
-  Area,
-  Claim,
-  ClaimCategory,
-  ClaimCriticality,
-  Priority,
-  Project,
-  UserRole,
-} from '../../../src/module/tickets/domain/models';
+import { AreaFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/area.firestore.repository';
+import { ClaimCategoryFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim-category.firestore.repository';
+import { ClaimCriticalityFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim-criticality.firestore.repository';
+import { ClaimFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim.firestore.repository';
+import { PriorityFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/priority.firestore.repository';
+import { ProjectFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/project.firestore.repository';
+import { UserRoleFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/user-role.firestore.repository';
 import {
   AreaService,
   ClaimCategoryService,
@@ -24,7 +20,7 @@ import { ClaimCriticalityService } from '../../../src/module/tickets/infrastruct
 import { ClaimService } from '../../../src/module/tickets/infrastructure/services/claim.service';
 import { ProjectService } from '../../../src/module/tickets/infrastructure/services/project.service';
 import { fakeApplicationUser } from '../../shared/fakes/user.fake';
-import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
+import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
 describe('ClaimController', () => {
   let controller: ClaimController;
@@ -46,34 +42,34 @@ describe('ClaimController', () => {
         CreateClaim,
         UpdateClaim,
         {
-          provide: getRepositoryToken(Claim),
-          useClass: Repository,
+          provide: ClaimFirestoreRepository,
+          useValue: {
+            findOne: jest.fn(),
+            findAll: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+          },
         },
         {
-          provide: getRepositoryToken(UserRole),
-          useClass: Repository,
+          provide: PriorityFirestoreRepository,
+          useValue: { findAll: jest.fn(), findById: jest.fn() },
         },
         {
-          provide: getRepositoryToken(Priority),
-          useClass: Repository,
+          provide: ClaimCategoryFirestoreRepository,
+          useValue: { findAll: jest.fn(), findById: jest.fn() },
+        },
+        { provide: AreaFirestoreRepository, useValue: { findById: jest.fn() } },
+        {
+          provide: ProjectFirestoreRepository,
+          useValue: { findById: jest.fn() },
         },
         {
-          provide: getRepositoryToken(ClaimCategory),
-          useClass: Repository,
+          provide: ClaimCriticalityFirestoreRepository,
+          useValue: { findById: jest.fn() },
         },
-        {
-          provide: getRepositoryToken(Area),
-          useClass: Repository,
-        },
-        {
-          provide: getRepositoryToken(Project),
-          useClass: Repository,
-        },
-        {
-          provide: getRepositoryToken(ClaimCriticality),
-          useClass: Repository,
-        },
-        FirebaseTestProvider,
+        UserRoleFirestoreRepository,
+        ClaimCategoryFirestoreRepository,
+        SupabaseTestProvider,
       ],
     }).compile();
 

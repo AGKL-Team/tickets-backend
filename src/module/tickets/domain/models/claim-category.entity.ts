@@ -1,18 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'claim_categories' })
+@Entity('claim_categories')
 export class ClaimCategory {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
   @Column()
   name!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => Claim, (claim) => claim.category)
+  @Column({ nullable: true })
   claims?: Claim[];
 
   changeName(name: string) {

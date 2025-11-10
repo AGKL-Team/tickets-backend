@@ -1,7 +1,7 @@
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseAuthGuard } from '../../src/module/core/auth/infrastructure/guard/supabase-auth.guard';
-import { FirebaseService } from '../../src/module/core/database/services/firebase.service';
+import { SupabaseService } from '../../src/module/core/database/services/supabase.service';
 
 // ===== Helpers de mocks =====
 function createExecutionContext(request: any): ExecutionContext {
@@ -22,7 +22,7 @@ function createMockSupabaseClient() {
 
 describe('SupabaseAuthGuard', () => {
   let guard: SupabaseAuthGuard;
-  let supabaseService: jest.Mocked<FirebaseService>;
+  let supabaseService: jest.Mocked<SupabaseService>;
   let supabaseClient: SupabaseClient;
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe('SupabaseAuthGuard', () => {
     supabaseService = {
       getClient: jest.fn().mockReturnValue(supabaseClient),
       getUserFromToken: jest.fn(),
-    } as unknown as jest.Mocked<FirebaseService>;
+    } as unknown as jest.Mocked<SupabaseService>;
 
     // Instanciamos el guard con el service mockeado
     guard = new SupabaseAuthGuard(supabaseService);
@@ -69,30 +69,30 @@ describe('SupabaseAuthGuard', () => {
     const req = { headers: { authorization: 'Bearer bad_token' } };
     const ctx = createExecutionContext(req);
 
-    (supabaseService.getUserFromToken as jest.Mock).mockResolvedValueOnce({
-      user: null,
+    (supabaseClient.auth.getUser as jest.Mock).mockResolvedValueOnce({
+      data: { user: null },
+      error: {},
     });
 
     await expect(guard.canActivate(ctx)).rejects.toThrow(
       'Invalid or expired token',
     );
-    expect(supabaseService.getUserFromToken).toHaveBeenCalledWith('bad_token');
+    expect(supabaseClient.auth.getUser).toHaveBeenCalledWith('bad_token');
   });
 
   it('lanza Unauthorized si data.user es null/undefined', async () => {
     const req = { headers: { authorization: 'Bearer expired_token' } };
     const ctx = createExecutionContext(req);
 
-    (supabaseService.getUserFromToken as jest.Mock).mockResolvedValueOnce({
-      user: null,
+    (supabaseClient.auth.getUser as jest.Mock).mockResolvedValueOnce({
+      data: { user: null },
+      error: {},
     });
 
     await expect(guard.canActivate(ctx)).rejects.toThrow(
       'Invalid or expired token',
     );
-    expect(supabaseService.getUserFromToken).toHaveBeenCalledWith(
-      'expired_token',
-    );
+    expect(supabaseClient.auth.getUser).toHaveBeenCalledWith('expired_token');
   });
 
   it('retorna true y adjunta request.user si el token es válido', async () => {
@@ -100,13 +100,14 @@ describe('SupabaseAuthGuard', () => {
     const req = { headers: { authorization: 'Bearer good_token' } } as any;
     const ctx = createExecutionContext(req);
 
-    (supabaseService.getUserFromToken as jest.Mock).mockResolvedValueOnce({
-      user: mockUser,
+    (supabaseClient.auth.getUser as jest.Mock).mockResolvedValueOnce({
+      data: { user: mockUser },
+      error: null,
     });
 
     await expect(guard.canActivate(ctx)).resolves.toBe(true);
     expect(req.user).toEqual(mockUser);
-    expect(supabaseService.getUserFromToken).toHaveBeenCalledWith('good_token');
+    expect(supabaseClient.auth.getUser).toHaveBeenCalledWith('good_token');
   });
 
   it('acepta esquemas no-Bearer (comportamiento actual) porque solo extrae la segunda parte', async () => {
@@ -115,12 +116,13 @@ describe('SupabaseAuthGuard', () => {
     const req = { headers: { authorization: 'Token xyz' } } as any;
     const ctx = createExecutionContext(req);
 
-    (supabaseService.getUserFromToken as jest.Mock).mockResolvedValueOnce({
-      user: mockUser,
+    (supabaseClient.auth.getUser as jest.Mock).mockResolvedValueOnce({
+      data: { user: mockUser },
+      error: null,
     });
 
     await expect(guard.canActivate(ctx)).resolves.toBe(true);
     expect(req.user).toEqual(mockUser);
-    expect(supabaseService.getUserFromToken).toHaveBeenCalledWith('xyz');
+    expect(supabaseClient.auth.getUser).toHaveBeenCalledWith('xyz');
   });
 });

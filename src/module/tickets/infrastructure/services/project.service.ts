@@ -1,46 +1,43 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Claim } from '../../domain/models';
+import { Claim } from '../../domain/models/claim.entity';
 import { Project } from '../../domain/models/project.entity';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
-    private readonly projectRepository: Repository<Project>,
+    private readonly repo: Repository<Project>,
     @InjectRepository(Claim)
-    private readonly claimRepository: Repository<Claim>,
+    private readonly claimRepo: Repository<Claim>,
   ) {}
 
   async save(entity: Project): Promise<Project> {
-    return this.projectRepository.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async findById(id: string): Promise<Project> {
-    const project = await this.projectRepository.findOne({ where: { id } });
-
-    if (!project)
-      throw new NotFoundException(
-        `No se encuentra el proyecto con el ID ${id}`,
-      );
-
-    return project;
+    const p = await this.repo.findOneBy({ id } as any);
+    if (!p)
+      throw new NotFoundException(`No se encuentra el proyecto con ID ${id}`);
+    return p;
   }
 
   async findAll(): Promise<Project[]> {
-    return this.projectRepository.find();
+    return this.repo.find();
   }
 
   async update(entity: Project): Promise<Project> {
-    return this.projectRepository.save(entity);
+    return this.repo.save(entity as any);
   }
 
   async delete(id: string): Promise<void> {
-    await this.projectRepository.delete(id);
+    await this.repo.delete(id as any);
   }
 
   async hasClaimsAssociated(id: string) {
-    return await this.claimRepository.findOne({ where: { project: { id } } });
+    const c = await this.claimRepo.findOneBy({ 'project.id': id } as any);
+    return !!c;
   }
 }

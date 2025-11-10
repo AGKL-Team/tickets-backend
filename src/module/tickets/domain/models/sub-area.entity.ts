@@ -1,27 +1,22 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Area } from './area.entity';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'subareas' })
+@Entity('sub_areas')
 export class SubArea {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
-  @Column({ length: 50 })
+  @Column()
   name!: string;
-  @Column({ length: 255, default: '', nullable: true })
+
+  @Column({ nullable: true })
   description!: string;
 
-  @ManyToOne(() => Area, (area) => area.subAreas)
+  @Column({ nullable: true })
   area!: Area;
 
-  @OneToMany(() => Claim, (claim) => claim.subArea)
+  @Column({ nullable: true })
   claims?: Claim[];
 
   changeName(name: string) {

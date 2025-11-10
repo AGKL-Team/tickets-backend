@@ -1,15 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'claim_states' })
+@Entity('claim_states')
 export class ClaimState {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
-  @Column({ unique: true })
+  @Column()
   name!: string;
 
-  @OneToMany(() => Claim, (claim) => claim.state)
+  @Column({ nullable: true })
   claims?: Claim[];
 
   isPending(): boolean {

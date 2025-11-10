@@ -1,18 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'claim_criticalities' })
+@Entity('claim_criticalities')
 export class ClaimCriticality {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
   @Column()
   level!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => Claim, (c) => c.criticality)
+  @Column({ nullable: true })
   claims?: Claim[];
 
   changeLevel(level: string) {

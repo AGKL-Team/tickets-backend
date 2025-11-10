@@ -1,16 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { ClaimCategoryController } from '../../../src/module/tickets/api/claim-category.controller';
 import { CreateClaimCategoryDto } from '../../../src/module/tickets/application/dto/create-claim-category.dto';
 import { UpdateClaimCategoryDto } from '../../../src/module/tickets/application/dto/update-claim-category.dto';
 import { CreateClaimCategory } from '../../../src/module/tickets/application/useCases/create-claim-category.use-case';
 import { UpdateClaimCategory } from '../../../src/module/tickets/application/useCases/update-claim-category.use-case';
-import { ClaimCategory } from '../../../src/module/tickets/domain/models/claim-category.entity';
-import { Claim } from '../../../src/module/tickets/domain/models/claim.entity';
+import { ClaimCategoryFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim-category.firestore.repository';
+import { ClaimFirestoreRepository } from '../../../src/module/tickets/infrastructure/repositories/claim.firestore.repository';
 import { ClaimCategoryService } from '../../../src/module/tickets/infrastructure/services/claim-category.service';
-import { FirebaseTestProvider } from '../../shared/providers/firebase-config-test.provider';
+import { SupabaseTestProvider } from '../../shared/providers/supabase-config-test.provider';
 
 describe('ClaimCategoryController (integration)', () => {
   let controller: ClaimCategoryController;
@@ -26,14 +24,27 @@ describe('ClaimCategoryController (integration)', () => {
         CreateClaimCategory,
         UpdateClaimCategory,
         {
-          provide: getRepositoryToken(Claim),
-          useClass: Repository,
+          provide: ClaimFirestoreRepository,
+          useValue: {
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            findById: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+          },
         },
         {
-          provide: getRepositoryToken(ClaimCategory),
-          useClass: Repository,
+          provide: ClaimCategoryFirestoreRepository,
+          useValue: {
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+          },
         },
-        FirebaseTestProvider,
+        ClaimCategoryFirestoreRepository,
+        SupabaseTestProvider,
       ],
     }).compile();
 

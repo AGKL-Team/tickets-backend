@@ -1,36 +1,28 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 import { ClaimState } from './claim-state.entity';
 import { Claim } from './claim.entity';
 
-@Entity({ name: 'claim_histories' })
+@Entity('claim_histories')
 export class ClaimHistory {
-  @PrimaryGeneratedColumn('uuid')
+  @ObjectIdColumn()
   id!: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ nullable: true })
   date!: Date;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description?: string;
 
-  @ManyToOne(() => ClaimState, { eager: true, nullable: true })
-  @JoinColumn()
+  @Column({ nullable: true })
   state?: ClaimState;
 
-  @ManyToOne(() => Claim, (c) => c.history)
-  @JoinColumn()
+  @Column({ nullable: true, type: 'simple-json' })
   claim!: Claim;
 
   @Column({ nullable: true })
   operatorId?: string;
 
-  @Column('bit', { default: false })
+  @Column({ nullable: true })
   isClasified!: boolean;
 
   static create(
