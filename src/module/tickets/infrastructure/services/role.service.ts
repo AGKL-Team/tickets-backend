@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { SupabaseService } from '../../../core/database/services/supabase.service';
 import { Role } from '../../domain/models/role.entity';
 import { RoleRepository } from '../../domain/repositories/role.repository.interface';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class RoleService implements RoleRepository {
@@ -30,25 +30,14 @@ export class RoleService implements RoleRepository {
   }
 
   async findById(id: string): Promise<Role> {
-    const client = this.supabaseService.getClient();
-    const resp: any = await client
-      .from('roles')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (resp.error)
+    const role = await this.roleRepository.findOneBy({ id });
+    if (!role)
       throw new NotFoundException(`No se encuentra el rol con ID ${id}`);
-    if (!resp.data)
-      throw new NotFoundException(`No se encuentra el rol con ID ${id}`);
-    return resp.data as Role;
+    return role;
   }
 
   async findAll(): Promise<Role[]> {
-    const client = this.supabaseService.getClient();
-    const resp: any = await client.from('roles').select('*');
-    if (resp.error)
-      throw new BadRequestException(resp.error.message || resp.error);
-    return resp.data as Role[];
+    return await this.roleRepository.find();
   }
 
   async update(entity: Role): Promise<Role> {

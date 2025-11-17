@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
+import { RoleService } from '../../../../tickets/infrastructure/services';
 import { UserRoleService } from '../../../../tickets/infrastructure/services/user-role.service';
 import { SupabaseService } from '../../../database/services/supabase.service';
 import { SignInRequest } from '../../application/requests/sign-in-request';
@@ -13,6 +14,7 @@ export class AuthService {
   constructor(
     private readonly supabaseService: SupabaseService,
     private readonly userRoleService: UserRoleService,
+    private readonly roleService: RoleService,
   ) {
     this.supabaseClient = this.supabaseService.getClient();
   }
@@ -84,8 +86,14 @@ export class AuthService {
       console.log('Fetching user roles for user ID:', user.id);
       const userRoles = await this.userRoleService.findByUserId(user.id);
       console.log('Fetched user roles:', userRoles);
-      roles = userRoles.map((ur) => ur.role?.name).filter((n) => !!n);
-    } catch {
+      // fetch roles
+      for (const userRole of userRoles) {
+        const role = await this.roleService.findById(userRole.roleId);
+        if (role) roles.push(role.name);
+      }
+      console.info('User roles resolved:', roles);
+    } catch (ex) {
+      console.error('Error fetching user roles:', ex);
       // swallow errors and return empty roles if role lookup fails
       roles = [];
     }

@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { UserRole } from './user-role.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('roles')
 export class Role {
@@ -8,9 +7,6 @@ export class Role {
 
   @Column('varchar', { unique: true })
   name!: string;
-
-  @OneToMany(() => UserRole, (userRole) => userRole.role)
-  userRoles?: UserRole[];
 
   changeName(name: string) {
     this.name = name;

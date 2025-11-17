@@ -52,6 +52,8 @@ import { SupabaseService } from './services/supabase.service';
         RatingCategory,
         ClaimHistory,
         ClaimState,
+        UserRole,
+        Priority,
       ],
     }),
     TypeOrmModule.forRoot({
@@ -85,7 +87,7 @@ import { SupabaseService } from './services/supabase.service';
       ],
       'mongoConnection',
     ),
-    TypeOrmModule.forFeature([UserRole, Role, UserArea], 'postgresConnection'),
+    TypeOrmModule.forFeature([Role], 'postgresConnection'),
   ],
   providers: [MongoService, SupabaseService, Logger],
   exports: [MongoService, SupabaseService, TypeOrmModule],

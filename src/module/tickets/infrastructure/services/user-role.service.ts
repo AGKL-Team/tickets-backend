@@ -4,17 +4,15 @@ import {
   NotImplementedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { SupabaseService } from '../../../core/database/services/supabase.service';
 import { UserRole } from '../../domain/models/user-role.entity';
 import { UserRoleRepository } from '../../domain/repositories/user-role.repository.interface';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class UserRoleService implements UserRoleRepository {
   constructor(
-    private readonly supabaseService: SupabaseService,
     @InjectRepository(UserRole, 'mongoConnection')
-    private readonly userRoleRepository: Repository<UserRole>,
+    private readonly userRoleRepository: MongoRepository<UserRole>,
   ) {}
 
   create(entity: UserRole): Promise<UserRole> {
