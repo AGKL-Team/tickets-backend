@@ -11,9 +11,10 @@ import { TicketModule } from '../module/tickets/tickets.module';
 @Module({
   imports: [
     ConfigurationModule,
-    // Incluye módulos generales
-    AuthModule,
+    // PostgreSQL Module (Supabase) && MongoDB Module
     DatabaseModule,
+    // Authentication Module
+    AuthModule,
     // Módulos del dominio
     TicketModule,
   ],

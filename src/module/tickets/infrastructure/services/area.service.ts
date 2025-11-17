@@ -9,9 +9,9 @@ import { AreaRepository } from '../../domain/repositories/area.repository.interf
 @Injectable()
 export class AreaService implements AreaRepository {
   constructor(
-    @InjectRepository(Area)
+    @InjectRepository(Area, 'mongoConnection')
     private readonly repo: MongoRepository<Area>,
-    @InjectRepository(Claim)
+    @InjectRepository(Claim, 'mongoConnection')
     private readonly claimRepo: MongoRepository<Claim>,
   ) {}
 

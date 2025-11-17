@@ -1,18 +1,28 @@
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from './role.entity';
 
 @Entity('user_roles')
 export class UserRole {
-  @ObjectIdColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column('uuid')
   userId!: string; // Supabase user id reference
 
-  @Column({ nullable: true })
+  @ManyToOne(() => Role, (role) => role.userRoles, {
+    eager: true,
+    nullable: false,
+  })
+  @JoinColumn({ name: 'roleId' })
   role!: Role;
 
-  @Column({ nullable: true })
+  @Column('timestamptz', { default: () => 'CURRENT_TIMESTAMP', nullable: true })
   createdAt!: Date;
 
   isAdmin(): boolean {

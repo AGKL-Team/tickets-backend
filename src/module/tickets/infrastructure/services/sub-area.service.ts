@@ -9,9 +9,9 @@ import { SubAreaRepository } from '../../domain/repositories/sub-area.repository
 @Injectable()
 export class SubAreaService implements SubAreaRepository {
   constructor(
-    @InjectRepository(SubArea)
+    @InjectRepository(SubArea, 'mongoConnection')
     private readonly repo: MongoRepository<SubArea>,
-    @InjectRepository(Claim)
+    @InjectRepository(Claim, 'mongoConnection')
     private readonly claimRepo: MongoRepository<Claim>,
   ) {}
 

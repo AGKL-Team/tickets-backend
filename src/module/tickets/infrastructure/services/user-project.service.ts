@@ -7,9 +7,9 @@ import { Project, UserProject } from '../../domain/models';
 @Injectable()
 export class UserProjectService {
   constructor(
-    @InjectRepository(UserProject)
+    @InjectRepository(UserProject, 'mongoConnection')
     private readonly repo: MongoRepository<UserProject>,
-    @InjectRepository(Project)
+    @InjectRepository(Project, 'mongoConnection')
     private readonly projectRepo: MongoRepository<Project>,
   ) {}
 

@@ -7,7 +7,7 @@ import { ClaimComment } from '../../domain/models/claim-comment.entity';
 @Injectable()
 export class ClaimCommentService {
   constructor(
-    @InjectRepository(ClaimComment)
+    @InjectRepository(ClaimComment, 'mongoConnection')
     private readonly commentRepository: MongoRepository<ClaimComment>,
   ) {}
 

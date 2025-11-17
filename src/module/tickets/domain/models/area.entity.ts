@@ -24,6 +24,10 @@ export class Area {
   @Column({ nullable: true })
   project?: Project;
 
+  // Users are stored in a different datasource (Postgres via Supabase).
+  // We do not keep a TypeORM relation here to avoid cross-datasource relations.
+  // Use `UserAreaService` to query assignments by area id when needed.
+
   changeName(name: string) {
     this.name = name.toUpperCase();
   }

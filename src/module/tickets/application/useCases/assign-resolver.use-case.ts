@@ -43,7 +43,7 @@ export class AssignResolver {
     if (!isAdmin && isAreaManager) {
       const operatorAreas = await this.userAreaService.findByUserId(operatorId);
       const assignedToClaimArea = operatorAreas.some(
-        (ua: UserArea) => ua.area?.id === claim.area?.id,
+        (ua: UserArea) => ua.areaId === claim.area?.id,
       );
       if (!assignedToClaimArea)
         throw new ForbiddenException(
@@ -54,7 +54,7 @@ export class AssignResolver {
     // ensure assignee is assigned to the claim's area
     const assigneeAreas = await this.userAreaService.findByUserId(resolverId);
     const assigneeAssigned = assigneeAreas.some(
-      (ua: UserArea) => ua.area?.id === claim.area?.id,
+      (ua: UserArea) => ua.areaId === claim.area?.id,
     );
     if (!assigneeAssigned)
       throw new ForbiddenException(

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -39,5 +40,12 @@ export class AuthController {
   @UseGuards(SupabaseAuthGuard)
   async signOut() {
     return await this.authService.signOut();
+  }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(SupabaseAuthGuard)
+  async me() {
+    return await this.authService.me();
   }
 }

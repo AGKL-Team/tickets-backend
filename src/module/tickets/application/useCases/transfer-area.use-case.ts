@@ -36,10 +36,10 @@ export class TransferArea {
     if (!isAdmin && isAreaManager) {
       const operatorAreas = await this.userAreaService.findByUserId(operatorId);
       const assignedToSource = operatorAreas.some(
-        (ua: UserArea) => ua.area?.id === claim.area?.id,
+        (ua: UserArea) => ua.areaId === claim.area?.id,
       );
       const assignedToDest = operatorAreas.some(
-        (ua: UserArea) => ua.area?.id === area.id,
+        (ua: UserArea) => ua.areaId === area.id,
       );
       if (!assignedToSource || !assignedToDest)
         throw new ForbiddenException(

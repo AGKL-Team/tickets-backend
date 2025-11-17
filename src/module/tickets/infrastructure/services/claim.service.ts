@@ -1,20 +1,14 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { toObjectId } from '../../../core/database/mongo.utils';
 import { Claim } from '../../domain/models/claim.entity';
 import { ClaimRepository } from '../../domain/repositories/claim.repository.interface';
-import { UserRoleService } from './user-role.service';
 
 @Injectable()
 export class ClaimService implements ClaimRepository {
   constructor(
-    private readonly userRoleService: UserRoleService,
-    @InjectRepository(Claim)
+    @InjectRepository(Claim, 'mongoConnection')
     private readonly claimRepository: MongoRepository<Claim>,
   ) {}
 
@@ -38,30 +32,23 @@ export class ClaimService implements ClaimRepository {
     if (!claim)
       throw new NotFoundException(`No se encuentra el reclamo con el ID ${id}`);
 
-    const roles = await this.userRoleService.findByUserId(userId);
-    const isAdmin = roles.some((role) => role.role.isAdmin());
-    if ((claim as any).clientId !== userId && !isAdmin) {
-      throw new ForbiddenException(
-        `No tiene acceso al reclamo con el ID ${id}`,
-      );
-    }
+    // const roles = await this.userRoleService.findByUserId(userId);
+    // const isAdmin = roles.some((role) => role.role.isAdmin());
+    // if ((claim as any).clientId !== userId && !isAdmin) {
+    //   throw new ForbiddenException(
+    //     `No tiene acceso al reclamo con el ID ${id}`,
+    //   );
+    // }
     return claim;
   }
 
   async findAll(userId: string, projectId?: string): Promise<Claim[]> {
-    const roles = await this.userRoleService.findByUserId(userId);
-    const isAdmin = roles.some((role) => role.role.isAdmin());
-    let all: Claim[] = [];
-    if (projectId) {
-      all = await this.claimRepository.find({
-        where: { project: { id: projectId } } as any,
-      });
-    } else {
-      all = await this.claimRepository.find();
-    }
-
-    if (isAdmin) return all;
-    return all.filter((c) => (c as any).clientId === userId);
+    return await this.claimRepository.find({
+      where: {
+        projectId,
+        userId,
+      },
+    });
   }
 
   async update(claim: Claim): Promise<Claim> {

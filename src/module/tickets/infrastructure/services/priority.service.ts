@@ -9,9 +9,9 @@ import { PriorityRepository } from '../../domain/repositories/priority.repositor
 @Injectable()
 export class PriorityService implements PriorityRepository {
   constructor(
-    @InjectRepository(Priority)
+    @InjectRepository(Priority, 'mongoConnection')
     private readonly priorityRepository: MongoRepository<Priority>,
-    @InjectRepository(Claim)
+    @InjectRepository(Claim, 'mongoConnection')
     private readonly claimRepository: MongoRepository<Claim>,
   ) {}
 

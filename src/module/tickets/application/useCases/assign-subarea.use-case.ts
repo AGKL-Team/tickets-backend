@@ -34,10 +34,10 @@ export class AssignSubArea {
     if (!isAdmin && isAreaManager) {
       const operatorAreas = await this.userAreaService.findByUserId(operatorId);
       const assignedToClaimArea = operatorAreas.some(
-        (ua: UserArea) => ua.area?.id === claim.area?.id,
+        (ua: UserArea) => ua.areaId === claim.area?.id,
       );
       const assignedToTargetArea = operatorAreas.some(
-        (ua: UserArea) => ua.area?.id === subArea.area?.id,
+        (ua: UserArea) => ua.areaId === subArea.area?.id,
       );
       if (!assignedToClaimArea || !assignedToTargetArea)
         throw new ForbiddenException(

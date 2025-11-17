@@ -1,21 +1,20 @@
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
-import { Area } from './area.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user_areas')
 export class UserArea {
-  @ObjectIdColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column('uuid')
   userId!: string;
 
-  @Column({ nullable: true })
-  area!: Area;
+  @Column()
+  areaId!: string;
 
-  static create(userId: string, area: Area) {
+  static create(userId: string, areaId: string) {
     const ua = new UserArea();
     ua.userId = userId;
-    ua.area = area;
+    ua.areaId = areaId;
     return ua;
   }
 }

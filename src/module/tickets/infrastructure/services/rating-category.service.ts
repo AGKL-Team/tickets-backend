@@ -7,7 +7,7 @@ import { RatingCategory } from '../../domain/models/rating-category.entity';
 @Injectable()
 export class RatingCategoryService {
   constructor(
-    @InjectRepository(RatingCategory)
+    @InjectRepository(RatingCategory, 'mongoConnection')
     private readonly repo: MongoRepository<RatingCategory>,
   ) {}
 

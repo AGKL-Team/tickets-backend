@@ -8,7 +8,7 @@ import { ClaimStateRepository } from '../../domain/repositories/claim-state.repo
 @Injectable()
 export class ClaimStateService implements ClaimStateRepository {
   constructor(
-    @InjectRepository(ClaimState)
+    @InjectRepository(ClaimState, 'mongoConnection')
     private readonly repo: MongoRepository<ClaimState>,
   ) {}
 

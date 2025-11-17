@@ -7,7 +7,7 @@ import { ClaimRating } from '../../domain/models/claim-rating.entity';
 @Injectable()
 export class ClaimRatingService {
   constructor(
-    @InjectRepository(ClaimRating)
+    @InjectRepository(ClaimRating, 'mongoConnection')
     private readonly ratingRepository: MongoRepository<ClaimRating>,
   ) {}
 

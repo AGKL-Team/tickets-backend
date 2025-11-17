@@ -8,7 +8,7 @@ import { UserArea } from '../../domain/models/user-area.entity';
 @Injectable()
 export class UserAreaService {
   constructor(
-    @InjectRepository(UserArea)
+    @InjectRepository(UserArea, 'mongoConnection')
     private readonly repo: MongoRepository<UserArea>,
   ) {}
 
@@ -21,7 +21,7 @@ export class UserAreaService {
   }
 
   async findByAreaId(areaId: string): Promise<UserArea[]> {
-    return this.repo.find({ where: { 'area.id': areaId } as any } as any);
+    return this.repo.find({ where: { areaId } as any } as any);
   }
 
   async findOne(id: string): Promise<UserArea> {

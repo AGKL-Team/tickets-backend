@@ -109,7 +109,7 @@ export class UpdateClaim {
         if (this.userAreaService) {
           const operatorAreas = await this.userAreaService.findByUserId(userId);
           const assignedToClaimArea = operatorAreas.some(
-            (ua: UserArea) => ua.area?.id === existing.area?.id,
+            (ua: UserArea) => ua.areaId === existing.area?.id,
           );
           if (!assignedToClaimArea)
             throw new ForbiddenException(
@@ -187,10 +187,10 @@ export class UpdateClaim {
         if (this.userAreaService) {
           const operatorAreas = await this.userAreaService.findByUserId(userId);
           const assignedToSource = operatorAreas.some(
-            (ua: UserArea) => ua.area?.id === existing.area?.id,
+            (ua: UserArea) => ua.areaId === existing.area?.id,
           );
           const assignedToDest = operatorAreas.some(
-            (ua: UserArea) => ua.area?.id === area.id,
+            (ua: UserArea) => ua.areaId === area.id,
           );
           if (!assignedToSource || !assignedToDest)
             throw new ForbiddenException(

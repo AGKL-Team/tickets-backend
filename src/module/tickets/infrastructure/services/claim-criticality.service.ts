@@ -8,9 +8,9 @@ import { Claim } from '../../domain/models/claim.entity';
 @Injectable()
 export class ClaimCriticalityService {
   constructor(
-    @InjectRepository(ClaimCriticality)
+    @InjectRepository(ClaimCriticality, 'mongoConnection')
     private readonly criticalityRepository: MongoRepository<ClaimCriticality>,
-    @InjectRepository(Claim)
+    @InjectRepository(Claim, 'mongoConnection')
     private readonly claimRepo: MongoRepository<Claim>,
   ) {}
 

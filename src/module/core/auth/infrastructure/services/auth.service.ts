@@ -81,10 +81,10 @@ export class AuthService {
     // fetch user roles from DB to include in the login response (front needs them)
     let roles: string[] = [];
     try {
+      console.log('Fetching user roles for user ID:', user.id);
       const userRoles = await this.userRoleService.findByUserId(user.id);
-          roles = userRoles
-            .map((ur) => ur.role?.name)
-            .filter((n) => !!n);
+      console.log('Fetched user roles:', userRoles);
+      roles = userRoles.map((ur) => ur.role?.name).filter((n) => !!n);
     } catch {
       // swallow errors and return empty roles if role lookup fails
       roles = [];
@@ -115,5 +115,14 @@ export class AuthService {
       throw new BadRequestException(response.error);
     }
     return response;
+  }
+
+  async me() {
+    const user = this.supabaseClient.auth.getUser();
+
+    const roles = await this.userRoleService.findAll();
+    console.info('All roles:', roles);
+
+    return user;
   }
 }

@@ -1,41 +1,54 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotImplementedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MongoRepository } from 'typeorm';
-import { toObjectId } from '../../../core/database/mongo.utils';
+import { Repository } from 'typeorm';
+import { SupabaseService } from '../../../core/database/services/supabase.service';
 import { UserRole } from '../../domain/models/user-role.entity';
 import { UserRoleRepository } from '../../domain/repositories/user-role.repository.interface';
 
 @Injectable()
 export class UserRoleService implements UserRoleRepository {
   constructor(
-    @InjectRepository(UserRole)
-    private readonly repo: MongoRepository<UserRole>,
+    private readonly supabaseService: SupabaseService,
+    @InjectRepository(UserRole, 'mongoConnection')
+    private readonly userRoleRepository: Repository<UserRole>,
   ) {}
 
-  async create(entity: UserRole): Promise<UserRole> {
-    return this.repo.save(entity as any);
+  create(entity: UserRole): Promise<UserRole> {
+    console.error('Entity creation is not supported.', entity);
+    throw new NotImplementedException('Entity creation is not supported.');
   }
 
   async findById(id: string): Promise<UserRole> {
-    const r = await this.repo.findOneBy({ id: toObjectId(id) } as any);
-    if (!r)
-      throw new NotFoundException(`No se encuentra userRole con ID ${id}`);
-    return r;
+    const userRole = await this.userRoleRepository.findOneBy({ id });
+    if (!userRole)
+      throw new BadRequestException(
+        `No se encuentra el rol de usuario con ID ${id}`,
+      );
+    return userRole;
   }
 
   async findByUserId(userId: string): Promise<UserRole[]> {
-    return this.repo.find({ where: { userId } as any } as any);
+    return await this.userRoleRepository.find({
+      where: {
+        userId: userId,
+      },
+    });
   }
 
   async findAll(): Promise<UserRole[]> {
-    return this.repo.find();
+    return await this.userRoleRepository.find();
   }
 
-  async update(entity: UserRole): Promise<UserRole> {
-    return this.repo.save(entity as any);
+  update(entity: UserRole): Promise<UserRole> {
+    console.error('Entity update is not supported.', entity);
+    throw new NotImplementedException('Entity update is not supported.');
   }
 
   async delete(id: string): Promise<void> {
-    await this.repo.delete(id as any);
+    await this.userRoleRepository.delete(id);
   }
 }

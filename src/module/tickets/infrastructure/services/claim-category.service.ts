@@ -9,9 +9,9 @@ import { ClaimCategoryRepository } from '../../domain/repositories/claim-categor
 @Injectable()
 export class ClaimCategoryService implements ClaimCategoryRepository {
   constructor(
-    @InjectRepository(ClaimCategory)
+    @InjectRepository(ClaimCategory, 'mongoConnection')
     private readonly repo: MongoRepository<ClaimCategory>,
-    @InjectRepository(Claim)
+    @InjectRepository(Claim, 'mongoConnection')
     private readonly claimRepo: MongoRepository<Claim>,
   ) {}
 

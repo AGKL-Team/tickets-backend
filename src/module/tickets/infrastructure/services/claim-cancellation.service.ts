@@ -8,7 +8,7 @@ import { ClaimCancellationRepository } from '../../domain/repositories/claim-can
 @Injectable()
 export class ClaimCancellationService implements ClaimCancellationRepository {
   constructor(
-    @InjectRepository(ClaimCancellation)
+    @InjectRepository(ClaimCancellation, 'mongoConnection')
     private readonly repo: MongoRepository<ClaimCancellation>,
   ) {}
 
