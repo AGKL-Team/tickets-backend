@@ -8,6 +8,8 @@ export class Role {
   @Column('varchar', { unique: true })
   name!: string;
 
+  static CLIENT: string = 'client';
+
   changeName(name: string) {
     this.name = name;
   }

@@ -133,4 +133,13 @@ export class AuthService {
 
     return user;
   }
+
+  async findById(userId: string) {
+    const { data, error } =
+      await this.supabaseClient.auth.admin.getUserById(userId);
+    if (error) {
+      throw new BadRequestException(error.message);
+    }
+    return data.user;
+  }
 }

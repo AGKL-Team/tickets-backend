@@ -1,3 +1,4 @@
+import { User } from '@supabase/supabase-js';
 import { UserRole } from '../models/user-role.entity';
 
 export interface UserRoleRepository {
@@ -7,4 +8,6 @@ export interface UserRoleRepository {
   findAll(): Promise<UserRole[]>;
   update(entity: UserRole): Promise<UserRole>;
   delete(id: string): Promise<void>;
+
+  findClients(): Promise<User[]>;
 }

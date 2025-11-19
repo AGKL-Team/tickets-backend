@@ -59,4 +59,11 @@ export class RoleService implements RoleRepository {
     if (resp.error)
       throw new BadRequestException(resp.error.message || resp.error);
   }
+
+  async findByName(name: string): Promise<Role> {
+    const role = await this.roleRepository.findOneBy({ name });
+    if (!role)
+      throw new NotFoundException(`No se encuentra el rol con nombre ${name}`);
+    return role;
+  }
 }
