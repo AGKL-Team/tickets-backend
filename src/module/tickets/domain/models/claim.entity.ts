@@ -17,10 +17,10 @@ export class Claim {
   @ObjectIdColumn()
   id!: string;
 
-  @Column()
+  @Column({ length: 50 })
   issue!: string;
 
-  @Column({ nullable: true })
+  @Column({ length: 255 })
   description?: string;
 
   @Column({ nullable: true })
