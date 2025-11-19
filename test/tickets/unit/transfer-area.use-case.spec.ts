@@ -57,8 +57,8 @@ describe('TransferArea UseCase', () => {
       fakeAreaManagerUserRole(operatorId),
     ]);
     (userAreaService.findByUserId as jest.Mock).mockResolvedValue([
-      { area: { id: 'area-1' } },
-      { area: { id: 'area-2' } },
+      { areaId: 'area-1' },
+      { areaId: 'area-2' },
     ]);
 
     const updated = { ...claim, updated: true };

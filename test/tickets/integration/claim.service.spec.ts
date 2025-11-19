@@ -34,7 +34,10 @@ describe('ClaimService', () => {
     const module = await Test.createTestingModule({
       providers: [
         ClaimService,
-        { provide: getRepositoryToken(Claim), useValue: claimRepository },
+        {
+          provide: getRepositoryToken(Claim, 'mongoConnection'),
+          useValue: claimRepository,
+        },
         { provide: UserRoleService, useValue: userRoleServiceMock },
         SupabaseTestProvider,
       ],

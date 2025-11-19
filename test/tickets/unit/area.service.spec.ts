@@ -29,8 +29,14 @@ describe('AreaService', () => {
     const module = await Test.createTestingModule({
       providers: [
         AreaService,
-        { provide: getRepositoryToken(Area), useValue: repo },
-        { provide: getRepositoryToken(Claim), useValue: claimRepo },
+        {
+          provide: getRepositoryToken(Area, 'mongoConnection'),
+          useValue: repo,
+        },
+        {
+          provide: getRepositoryToken(Claim, 'mongoConnection'),
+          useValue: claimRepo,
+        },
         SupabaseTestProvider,
       ],
     }).compile();
@@ -40,19 +46,19 @@ describe('AreaService', () => {
 
   it('findById returns area when found', async () => {
     const a = Area.create('test');
-  (repo.findOneBy as jest.Mock).mockResolvedValue(a);
+    (repo.findOneBy as jest.Mock).mockResolvedValue(a);
     const res = await service.findById('id1');
     expect(res).toBe(a);
   });
 
   it('findById throws NotFound when missing', async () => {
-  (repo.findOneBy as jest.Mock).mockRejectedValue(new NotFoundException());
+    (repo.findOneBy as jest.Mock).mockRejectedValue(new NotFoundException());
     await expect(service.findById('no')).rejects.toThrow(NotFoundException);
   });
 
   it('findAll returns list', async () => {
     const list = [Area.create('a1')];
-  (repo.find as jest.Mock).mockResolvedValue(list);
+    (repo.find as jest.Mock).mockResolvedValue(list);
     const res = await service.findAll();
     expect(res).toBe(list);
   });
@@ -66,13 +72,13 @@ describe('AreaService', () => {
 
   it('findByName returns area when exists', async () => {
     const a = Area.create('X');
-  (repo.findOneBy as jest.Mock).mockResolvedValue(a);
+    (repo.findOneBy as jest.Mock).mockResolvedValue(a);
     const res = await service.findByName('X');
     expect(res).toBe(a);
   });
 
   it('findByName throws when not found', async () => {
-  (repo.findOneBy as jest.Mock).mockRejectedValue(new NotFoundException());
+    (repo.findOneBy as jest.Mock).mockRejectedValue(new NotFoundException());
     await expect(service.findByName('no')).rejects.toThrow(NotFoundException);
   });
 

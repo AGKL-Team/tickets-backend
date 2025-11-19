@@ -96,7 +96,7 @@ describe('Create -> Assign -> Start -> Resolve -> Rate flow (integration)', () =
       /* userAreaService */ {
         findByUserId: (uid: string) => {
           void uid;
-          return Promise.resolve([{ area: { id: 'area-1' } }]);
+          return Promise.resolve([{ areaId: 'area-1' }]);
         },
       } as any,
     );

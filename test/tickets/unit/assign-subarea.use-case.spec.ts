@@ -57,7 +57,7 @@ describe('AssignSubArea UseCase', () => {
       fakeAreaManagerUserRole(operatorId),
     ]);
     (userAreaService.findByUserId as jest.Mock).mockResolvedValue([
-      { area: { id: 'area-1' } },
+      { areaId: 'area-1' },
     ]);
 
     const updated = { ...claim, updated: true };

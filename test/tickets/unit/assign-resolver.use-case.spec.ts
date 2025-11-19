@@ -58,9 +58,8 @@ describe('AssignResolver UseCase', () => {
 
     (userAreaService.findByUserId as jest.Mock).mockImplementation(
       (uid: string) => {
-        if (uid === operatorId)
-          return Promise.resolve([{ area: { id: 'area-1' } }]);
-        return Promise.resolve([{ area: { id: 'area-1' } }]);
+        if (uid === operatorId) return Promise.resolve([{ areaId: 'area-1' }]);
+        return Promise.resolve([{ areaId: 'area-1' }]);
       },
     );
 

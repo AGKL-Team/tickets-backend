@@ -31,8 +31,14 @@ describe('SubAreaService', () => {
     const module = await Test.createTestingModule({
       providers: [
         SubAreaService,
-        { provide: getRepositoryToken(SubArea), useValue: repo },
-        { provide: getRepositoryToken(Claim), useValue: claimRepo },
+        {
+          provide: getRepositoryToken(SubArea, 'mongoConnection'),
+          useValue: repo,
+        },
+        {
+          provide: getRepositoryToken(Claim, 'mongoConnection'),
+          useValue: claimRepo,
+        },
         SupabaseTestProvider,
       ],
     }).compile();

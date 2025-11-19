@@ -5,6 +5,7 @@ import { SignInRequest } from '../../src/module/core/auth/application/requests/s
 import { SignUpRequest } from '../../src/module/core/auth/application/requests/sign-up-request';
 import { AuthService } from '../../src/module/core/auth/infrastructure/services/auth.service';
 import { SupabaseService } from '../../src/module/core/database/services/supabase.service';
+import { RoleService } from '../../src/module/tickets/infrastructure/services';
 import { UserRoleService } from '../../src/module/tickets/infrastructure/services/user-role.service';
 import { ConfigTestProvider } from '../shared/providers/config-test.provider';
 
@@ -43,6 +44,10 @@ describe('AuthService', () => {
         {
           provide: UserRoleService,
           useValue: { findByUserId: jest.fn().mockResolvedValue([]) },
+        },
+        {
+          provide: RoleService,
+          useValue: { findById: jest.fn() },
         },
         ConfigTestProvider,
       ],

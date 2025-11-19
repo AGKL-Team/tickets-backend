@@ -1,15 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { toObjectId } from '../../../core/database/mongo.utils';
 import { Claim } from '../../domain/models/claim.entity';
 import { ClaimRepository } from '../../domain/repositories/claim.repository.interface';
+import { UserRoleService } from './user-role.service';
 
 @Injectable()
 export class ClaimService implements ClaimRepository {
   constructor(
     @InjectRepository(Claim, 'mongoConnection')
     private readonly claimRepository: MongoRepository<Claim>,
+    private readonly userRoleService: UserRoleService,
   ) {}
 
   async save(claim: Claim): Promise<Claim> {
@@ -32,13 +38,13 @@ export class ClaimService implements ClaimRepository {
     if (!claim)
       throw new NotFoundException(`No se encuentra el reclamo con el ID ${id}`);
 
-    // const roles = await this.userRoleService.findByUserId(userId);
-    // const isAdmin = roles.some((role) => role.role.isAdmin());
-    // if ((claim as any).clientId !== userId && !isAdmin) {
-    //   throw new ForbiddenException(
-    //     `No tiene acceso al reclamo con el ID ${id}`,
-    //   );
-    // }
+    const roles = await this.userRoleService.findByUserId(userId);
+    const isAdmin = roles.some((role) => role.role.isAdmin());
+    if (claim.clientId !== userId && !isAdmin) {
+      throw new ForbiddenException(
+        `No tiene acceso al reclamo con el ID ${id}`,
+      );
+    }
     return claim;
   }
 
