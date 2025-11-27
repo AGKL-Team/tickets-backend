@@ -8,6 +8,8 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });
 
+  app.setGlobalPrefix('api');
+
   // Middleware / pipes globales
   const isProduction = process.env.NODE_ENV === 'production';
   app.enableCors({

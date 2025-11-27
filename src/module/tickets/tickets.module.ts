@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
-import { AuthModule } from './../core/auth/auth.module';
-import { DatabaseModule } from './../core/database/database.module';
+import { Module, forwardRef } from '@nestjs/common';
+import { AuthModule } from '../core/auth/auth.module';
+import { DatabaseModule } from '../core/database/database.module';
+
 import {
   AreaController,
   AssignmentController,
@@ -15,6 +16,9 @@ import {
   RoleController,
   SubAreaController,
 } from './api';
+
+import { UserController } from './api/user.controller';
+import { UserService } from './infrastructure/services/user.service';
 import { AssignResolver } from './application/useCases/assign-resolver.use-case';
 import { AssignSubArea } from './application/useCases/assign-subarea.use-case';
 import { CreateArea } from './application/useCases/create-area.use-case';
@@ -41,6 +45,7 @@ import { UpdatePriority } from './application/useCases/update-priority.use-case'
 import { UpdateProject } from './application/useCases/update-project.use-case';
 import { UpdateRating } from './application/useCases/update-rating.use-case';
 import { UpdateSubArea } from './application/useCases/update-sub-area.use-case';
+
 import {
   AreaService,
   ClaimCancellationService,
@@ -61,10 +66,15 @@ import {
 } from './infrastructure/services';
 
 @Module({
-  imports: [DatabaseModule, AuthModule],
+  imports: [
+    DatabaseModule,
+    forwardRef(() => AuthModule) // Evita el ciclo con AuthModule
+  ],
   providers: [
     // services
     ClaimService,
+    UserRoleService,
+    RoleService,
     ClaimCancellationService,
     ClaimCategoryService,
     ClaimCommentService,
@@ -72,8 +82,6 @@ import {
     ClaimStateService,
     PriorityService,
     RatingCategoryService,
-    RoleService,
-    UserRoleService,
     UserAreaService,
     AreaService,
     SubAreaService,
@@ -82,17 +90,18 @@ import {
     UserProjectService,
     // Use cases
     // comments
+    UserService,
+    CreateClaim,
+    UpdateClaim,
     CreateComment,
     UpdateComment,
     DeleteComment,
-    // ratings
     CreateRating,
     UpdateRating,
     DeleteRating,
-    CreateClaim,
+    // ratings
     CreatePriority,
     UpdatePriority,
-    UpdateClaim,
     CreateClaimCategory,
     UpdateClaimCategory,
     DeleteClaimCategory,
@@ -114,46 +123,9 @@ import {
     TransferArea,
   ],
   exports: [
+    RoleService,
+    UserRoleService,
     ClaimService,
-    ClaimCancellationService,
-    ClaimCategoryService,
-    ClaimCommentService,
-    ClaimRatingService,
-    ClaimStateService,
-    PriorityService,
-    UserAreaService,
-    AreaService,
-    SubAreaService,
-    // Use cases
-    CreateClaim,
-    CreatePriority,
-    UpdatePriority,
-    UpdateClaim,
-    CreateClaimCategory,
-    UpdateClaimCategory,
-    DeleteClaimCategory,
-    DeletePriority,
-    // Area/SubArea use-cases
-    CreateArea,
-    UpdateArea,
-    DeleteArea,
-    CreateSubArea,
-    UpdateSubArea,
-    DeleteSubArea,
-    // Project use-cases
-    CreateProject,
-    UpdateProject,
-    DeleteProject,
-    // exports for new use-cases/services
-    CreateComment,
-    UpdateComment,
-    DeleteComment,
-    CreateRating,
-    UpdateRating,
-    DeleteRating,
-    AssignResolver,
-    AssignSubArea,
-    TransferArea,
   ],
   controllers: [
     ClaimController,
@@ -169,6 +141,7 @@ import {
     CommentController,
     RatingController,
     AssignmentController,
+    UserController,
   ],
 })
 export class TicketModule {}
