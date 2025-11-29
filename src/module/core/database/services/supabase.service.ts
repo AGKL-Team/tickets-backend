@@ -12,10 +12,18 @@ export class SupabaseService {
 
     if (!supabaseConfig?.url)
       throw new Error('SUPABASE_URL must be defined in configuration');
-    if (!supabaseConfig?.key)
-      throw new Error('SUPABASE_KEY must be defined in configuration');
 
-    this.supabase = createClient(supabaseConfig.url, supabaseConfig.key);
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE || supabaseConfig.key;
+
+    if (!serviceRoleKey)
+      throw new Error('SUPABASE_SERVICE_ROLE or SUPABASE_KEY must be defined');
+
+    this.supabase = createClient(supabaseConfig.url, serviceRoleKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
   }
 
   getClient(): SupabaseClient {
@@ -34,8 +42,8 @@ export class SupabaseService {
         throw new BadRequestException('Las credenciales son inválidas');
       default:
         throw new BadRequestException(
-          'Ocurrió un error inesperado. Inténtalo de nuevo más tarde.' +
-            error.code,
+          'Ocurrió un error inesperado. Inténtalo de nuevo más tarde. ' +
+          error.code,
         );
     }
   }
