@@ -30,12 +30,10 @@ export class UserService {
 
     if (userRoles && userRoles.length > 0) {
       try {
-        // CORRECCIÓN 1: Agregamos '!' en userRoles[0]!
         const role = await this.roleService.findById(userRoles[0]!.roleId);
         if (role) roleName = role.name;
-      } catch (e) {
-        // Fallback silencioso
-      }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) { /* empty */ }
     }
 
     return {
@@ -51,7 +49,6 @@ export class UserService {
     const { data, error } = await this.supabaseAdmin.updateUserById(userId, {
       user_metadata: {
         nombre: dto.nombre,
-        telefono: dto.telefono
       }
     });
 
@@ -72,9 +69,9 @@ export class UserService {
 
       if (userRoles && userRoles.length > 0) {
         try {
-          // CORRECCIÓN 2: Agregamos '!' aquí también -> userRoles[0]!
           const role = await this.roleService.findById(userRoles[0]!.roleId);
           if (role) roleName = role.name;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) { /* empty */ }
       }
 

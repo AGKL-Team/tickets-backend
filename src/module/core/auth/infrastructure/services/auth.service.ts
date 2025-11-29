@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { RoleService } from '../../../../tickets/infrastructure/services';
 import { UserRoleService } from '../../../../tickets/infrastructure/services/user-role.service';
@@ -13,7 +13,11 @@ export class AuthService {
 
   constructor(
     private readonly supabaseService: SupabaseService,
+
+    @Inject(forwardRef(() => UserRoleService))
     private readonly userRoleService: UserRoleService,
+
+    @Inject(forwardRef(() => RoleService))
     private readonly roleService: RoleService,
   ) {
     this.supabaseClient = this.supabaseService.getClient();
@@ -127,9 +131,12 @@ export class AuthService {
 
   async me() {
     const user = this.supabaseClient.auth.getUser();
-
-    const roles = await this.userRoleService.findAll();
-    console.info('All roles:', roles);
+    try {
+      const roles = await this.userRoleService.findAll();
+      console.info('All roles:', roles);
+    } catch (e) {
+      console.warn('Could not fetch roles in me()', e);
+    }
 
     return user;
   }
